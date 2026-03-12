@@ -14,7 +14,7 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "CentelhaProd | Realtime Stories",
+  title: "CentelhaProd | Audiovisual, Estratégia e Criatividade",
   description: "Marketing de impacto instantâneo. Site em desenvolvimento.",
 };
 

@@ -12,15 +12,48 @@ const POSTS = [
   "https://www.instagram.com/p/DTTSzPuidN9/"
 ];
 
+type Lang = 'pt' | 'en' | 'es';
+
+const TRANSLATIONS = {
+  pt: {
+    badge: "Em Breve",
+    subtitle: "Enquanto nosso novo site está sendo preparado, acompanhe as produções da <strong>CentelhaProd</strong> no Instagram:",
+    cta: "Acessar @centelhaprod",
+    footer: "© {year} CentelhaProd. Todos os direitos reservados."
+  },
+  en: {
+    badge: "Coming Soon",
+    subtitle: "While our new website is being prepared, follow <strong>CentelhaProd</strong>'s latest productions on Instagram:",
+    cta: "Follow @centelhaprod",
+    footer: "© {year} CentelhaProd. All rights reserved."
+  },
+  es: {
+    badge: "Muy Pronto",
+    subtitle: "Mientras preparamos nuestro nuevo sitio web, sigue as producciones de <strong>CentelhaProd</strong> en Instagram:",
+    cta: "Seguir @centelhaprod",
+    footer: "© {year} CentelhaProd. Todos los derechos reservados."
+  }
+};
+
 export default function Home() {
   const [mounted, setMounted] = useState(false);
+  const [lang, setLang] = useState<Lang>('pt');
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  const t = TRANSLATIONS[lang];
+  const year = new Date().getFullYear();
+
   return (
     <main className={styles.main}>
+      <div className={styles.lang_selector}>
+        <button onClick={() => setLang('pt')} className={lang === 'pt' ? styles.active_lang : ""}>PT</button>
+        <button onClick={() => setLang('en')} className={lang === 'en' ? styles.active_lang : ""}>EN</button>
+        <button onClick={() => setLang('es')} className={lang === 'es' ? styles.active_lang : ""}>ES</button>
+      </div>
+
       {mounted && (
         <>
           <video 
@@ -38,7 +71,7 @@ export default function Home() {
       )}
 
       <div className={styles.status_badge}>
-        Em Breve
+        {t.badge}
       </div>
 
       <div className={styles.logo_container}>
@@ -53,10 +86,10 @@ export default function Home() {
       </div>
 
       <div className={styles.copy_container}>
-        <p className={styles.subtitle}>
-          Enquanto nosso novo site não fica pronto, acompanhe <br /> 
-          as produções da <strong>CentelhaProd</strong> no Instagram:
-        </p>
+        <p 
+          className={styles.subtitle} 
+          dangerouslySetInnerHTML={{ __html: t.subtitle }} 
+        />
       </div>
 
       <a 
@@ -65,7 +98,7 @@ export default function Home() {
         rel="noopener noreferrer" 
         className={styles.instagram_link}
       >
-        Acessar @centelhaprod
+        {t.cta}
       </a>
 
       <div className={styles.feed_container}>
@@ -79,7 +112,7 @@ export default function Home() {
       </div>
 
       <footer className={styles.footer}>
-        © {new Date().getFullYear()} CentelhaProd
+        {t.footer.replace('{year}', year.toString())}
       </footer>
     </main>
   );
