@@ -21,17 +21,21 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <video 
-        autoPlay 
-        muted 
-        loop 
-        playsInline 
-        preload="auto"
-        className={styles.video_bg}
-      >
-        <source src="/CameraLens.mp4" type="video/mp4" />
-      </video>
-      <div className={styles.video_overlay} />
+      {mounted && (
+        <>
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            preload="auto"
+            className={styles.video_bg}
+          >
+            <source src="/CameraLens.mp4" type="video/mp4" />
+          </video>
+          <div className={styles.video_overlay} />
+        </>
+      )}
 
       <div className={styles.status_badge}>
         Lançamento em breve
