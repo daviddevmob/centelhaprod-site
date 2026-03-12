@@ -38,7 +38,7 @@ export default function Home() {
       )}
 
       <div className={styles.status_badge}>
-        Lançamento em breve
+        Em Breve
       </div>
 
       <div className={styles.logo_container}>
