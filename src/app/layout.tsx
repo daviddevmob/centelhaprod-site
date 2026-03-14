@@ -14,8 +14,28 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "CentelhaProd | Audiovisual, Estratégia e Criatividade",
-  description: "Marketing de impacto instantâneo. Site em desenvolvimento.",
+  title: "CentelhaProd",
+  description: "Transformando eventos em narrativas visuais.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
+  openGraph: {
+    title: "CentelhaProd",
+    description: "Transformando eventos em narrativas visuais.",
+    url: "https://centelha.com.br", // Replace with real domain when deployed
+    siteName: "CentelhaProd",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "CentelhaProd Logo",
+      },
+    ],
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

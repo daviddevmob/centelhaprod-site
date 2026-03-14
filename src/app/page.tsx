@@ -2,37 +2,47 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { InstagramEmbed } from "react-social-media-embed";
+import { Instagram } from "lucide-react";
+import { motion, Variants } from "framer-motion";
 import styles from "./page.module.css";
+import dynamic from 'next/dynamic';
 
-const POSTS = [
-  "https://www.instagram.com/p/DVRMSPDDrBJ/",
-  "https://www.instagram.com/p/DUGd3rtDgGV/",
-  "https://www.instagram.com/p/DUGdlQBDqye/",
-  "https://www.instagram.com/p/DTTSzPuidN9/"
-];
+const AlbumSection = dynamic(() => import("../components/AlbumSection"));
+const QuemSomos = dynamic(() => import("../components/QuemSomos"));
+const ComoTrabalhamos = dynamic(() => import("../components/ComoTrabalhamos"));
 
 type Lang = 'pt' | 'en' | 'es';
 
 const TRANSLATIONS = {
   pt: {
-    badge: "Em Breve",
-    subtitle: "Enquanto nosso novo site está sendo preparado, acompanhe as produções da <strong>CentelhaProd</strong> no Instagram:",
-    cta: "Acessar @centelhaprod",
-    footer: "© {year} CentelhaProd. Todos os direitos reservados."
+    subtitle: "We are Storytellers 🎥 Audiovisual | Estratégia | Criatividade",
+    cta_whatsapp: "AGENDAR TRABALHO",
+    footer: "© {year} CentelhaProd. Todos os direitos reservados.",
+    nav_quem_somos: "Quem Somos",
+    nav_como_trabalhamos: "Como Trabalhamos",
+    nav_midias: "Mídias"
   },
   en: {
-    badge: "Coming Soon",
-    subtitle: "While our new website is being prepared, follow <strong>CentelhaProd</strong>'s latest productions on Instagram:",
-    cta: "Follow @centelhaprod",
-    footer: "© {year} CentelhaProd. All rights reserved."
+    subtitle: "We are Storytellers 🎥 Audiovisual | Strategy | Creativity",
+    cta_whatsapp: "BOOK NOW",
+    footer: "© {year} CentelhaProd. All rights reserved.",
+    nav_quem_somos: "Who We Are",
+    nav_como_trabalhamos: "How We Work",
+    nav_midias: "Media"
   },
   es: {
-    badge: "Muy Pronto",
-    subtitle: "Mientras preparamos nuestro nuevo sitio web, sigue as producciones de <strong>CentelhaProd</strong> en Instagram:",
-    cta: "Seguir @centelhaprod",
-    footer: "© {year} CentelhaProd. Todos los derechos reservados."
+    subtitle: "We are Storytellers 🎥 Audiovisual | Estrategia | Creatividad",
+    cta_whatsapp: "RESERVAR AHORA",
+    footer: "© {year} CentelhaProd. Todos los derechos reservados.",
+    nav_quem_somos: "Quiénes Somos",
+    nav_como_trabalhamos: "Cómo Trabajamos",
+    nav_midias: "Medios"
   }
+};
+
+const fadeUpVariant: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
 };
 
 export default function Home() {
@@ -40,6 +50,7 @@ export default function Home() {
   const [lang, setLang] = useState<Lang>('pt');
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setMounted(true);
   }, []);
 
@@ -48,14 +59,34 @@ export default function Home() {
 
   return (
     <main className={styles.main}>
-      <div className={styles.lang_selector}>
-        <button onClick={() => setLang('pt')} className={lang === 'pt' ? styles.active_lang : ""}>PT</button>
-        <button onClick={() => setLang('en')} className={lang === 'en' ? styles.active_lang : ""}>EN</button>
-        <button onClick={() => setLang('es')} className={lang === 'es' ? styles.active_lang : ""}>ES</button>
-      </div>
+      <header className={styles.header}>
+        <div className={styles.header_left}>
+          <div className={styles.lang_selector}>
+            <button onClick={() => setLang('pt')} className={lang === 'pt' ? styles.active_lang : ""}>PT</button>
+            <button onClick={() => setLang('en')} className={lang === 'en' ? styles.active_lang : ""}>EN</button>
+            <button onClick={() => setLang('es')} className={lang === 'es' ? styles.active_lang : ""}>ES</button>
+          </div>
+          
+        <nav className={styles.nav_links}>
+            <a href="#quem-somos">{t.nav_quem_somos}</a>
+            <a href="#como-trabalhamos">{t.nav_como_trabalhamos}</a>
+            <a href="#midias">{t.nav_midias}</a>
+          </nav>
+        </div>
+
+        <a 
+          href="https://www.instagram.com/centelhaprod/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={styles.header_ig}
+          aria-label="Instagram"
+        >
+          <Instagram size={20} />
+        </a>
+      </header>
 
       {mounted && (
-        <>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
           <video 
             autoPlay 
             muted 
@@ -67,52 +98,108 @@ export default function Home() {
             <source src="/CameraLens.mp4" type="video/mp4" />
           </video>
           <div className={styles.video_overlay} />
-        </>
+        </motion.div>
       )}
 
-      <div className={styles.status_badge}>
-        {t.badge}
-      </div>
+      {/* Removed status badge */}
 
-      <div className={styles.logo_container}>
+      <motion.div 
+        className={styles.logo_container}
+        variants={fadeUpVariant}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.2 }}
+      >
         <Image 
           src="/centelha-logo.png" 
           alt="CentelhaProd Logo" 
-          width={180} 
-          height={180} 
+          width={280} 
+          height={280} 
           priority
           style={{ objectFit: 'contain' }}
         />
-      </div>
+      </motion.div>
 
-      <div className={styles.copy_container}>
+      <motion.div 
+        className={styles.copy_container}
+        variants={fadeUpVariant}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.4 }}
+      >
         <p 
           className={styles.subtitle} 
           dangerouslySetInnerHTML={{ __html: t.subtitle }} 
         />
-      </div>
+      </motion.div>
 
-      <a 
-        href="https://www.instagram.com/centelhaprod/" 
+      <motion.a 
+        href="https://wa.me/5585987172446" 
         target="_blank" 
         rel="noopener noreferrer" 
-        className={styles.instagram_link}
+        className={styles.whatsapp_btn}
+        variants={fadeUpVariant}
+        initial="hidden"
+        animate="visible"
+        transition={{ delay: 0.6 }}
+        whileHover={{ scale: 1.05, y: -4 }}
+        whileTap={{ scale: 0.95 }}
       >
-        {t.cta}
-      </a>
+        {t.cta_whatsapp}
+      </motion.a>
 
-      <div className={styles.feed_container}>
-        {mounted && POSTS.map((url, index) => (
-          <div key={index} className={styles.instagram_card}>
-            <div className={styles.embed_wrapper}>
-              <InstagramEmbed url={url} width="100%" />
-            </div>
-          </div>
-        ))}
-      </div>
+      <QuemSomos lang={lang} />
+      
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeUpVariant}
+        style={{ width: "100%" }}
+      >
+        <ComoTrabalhamos lang={lang} />
+      </motion.div>
+      
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeUpVariant}
+        style={{ width: "100%" }}
+      >
+        <AlbumSection lang={lang} />
+      </motion.div>
+
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeUpVariant}
+        style={{ width: "100%", display: "flex", justifyContent: "center", margin: "40px 0" }}
+      >
+        <motion.a 
+          href="https://wa.me/5585987172446" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className={styles.whatsapp_btn}
+          whileHover={{ scale: 1.05, y: -4 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {t.cta_whatsapp}
+        </motion.a>
+      </motion.div>
 
       <footer className={styles.footer}>
-        {t.footer.replace('{year}', year.toString())}
+        <a 
+          href="https://www.instagram.com/centelhaprod/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className={styles.footer_ig}
+          aria-label="Instagram"
+        >
+          <Instagram size={24} />
+        </a>
+        <p>{t.footer.replace('{year}', year.toString())}</p>
       </footer>
     </main>
   );
