@@ -14,6 +14,7 @@ const PARTNERS = [
   { name: 'FIEC', logo: '/parceiros/fiec.jpg' },
   { name: 'Freixenet', logo: '/parceiros/freixenet.jpg' },
   { name: 'Layback', logo: '/parceiros/layback.png' },
+  { name: 'Mamba', logo: '/parceiros/mamba.jpg' },
   { name: 'Monster', logo: '/parceiros/monster.png' },
   { name: 'Monte Dourado', logo: '/parceiros/monte dourado.jpg' },
   { name: 'Monteiro Urbanismo', logo: '/parceiros/monteiro urbanismo.png' },
