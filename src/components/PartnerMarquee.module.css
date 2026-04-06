@@ -1,13 +1,70 @@
+/* 1. Container Principal com Profundidade */
 .section {
   width: 100%;
-  padding: 80px 0 60px;
+  padding: 6rem 0;
+  /* Fundo não é preto puro! Gradiente radial sutil para dar ambiência */
+  background: radial-gradient(circle at center, #111111 0%, #030303 100%);
   overflow: hidden;
-  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  gap: 4rem; /* Respiro entre o título e a esteira */
 }
 
+/* 2. Container e Fades da Esteira */
+.marquee_container {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+
+.fade_left, .fade_right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 15%;
+  z-index: 10;
+  pointer-events: none; /* Deixa o mouse passar pelo degradê */
+}
+
+.fade_left {
+  left: 0;
+  background: linear-gradient(to right, #030303, transparent);
+}
+
+.fade_right {
+  right: 0;
+  background: linear-gradient(to left, #030303, transparent);
+}
+
+/* 3. A Fita e a Animação */
+.marquee_track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: 6rem; /* Espaço generoso entre as logos */
+  padding: 40px 3rem 80px 3rem; /* Padding base muito maior embaixo para a legenda não sofrer corte */
+  animation: marquee 40s linear infinite;
+}
+
+/* Pausa a fita inteira quando o usuário coloca o mouse em qualquer lugar nela */
+.marquee_container:hover .marquee_track {
+  animation-play-state: paused;
+}
+
+/* 4. O Wrapper e o Efeito Silhueta (Estado de Repouso) */
+.logo_wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 160px; /* Evita que logos horizontais empurrem o layout */
+  cursor: pointer;
+}
+
+/* Estilos de título e header, inseridos da documentação original ou baseados no que tinha na seção */
 .header {
-  max-width: 1100px;
-  margin: 0 auto 48px;
+  margin: 0 auto;
   padding: 0 24px;
   text-align: center;
   display: flex;
@@ -17,7 +74,7 @@
 
 .title {
   color: #fff;
-  font-family: var(--font-archivo);
+  font-family: var(--font-archivo, sans-serif);
   font-size: clamp(1.5rem, 4vw, 2.2rem);
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -38,118 +95,60 @@
   margin-top: 16px;
 }
 
-.marquee_container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-.fade_left,
-.fade_right {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 120px;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.fade_left {
-  left: 0;
-  background: linear-gradient(to right, var(--background), transparent);
-}
-
-.fade_right {
-  right: 0;
-  background: linear-gradient(to left, var(--background), transparent);
-}
-
-.marquee_track {
-  display: flex;
-  align-items: center;
-  gap: 64px;
-  padding: 0 32px;
-  width: max-content;
-  animation: marquee 40s linear infinite;
-}
-
-.marquee_track:hover {
-  animation-play-state: paused;
-}
-
-.logo_wrapper {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 48px;
-}
-
 .logo {
-  height: 48px;
+  height: 48px; /* ALTURA FIXA: O segredo para alinhar formas diferentes */
   width: auto;
   object-fit: contain;
-  opacity: 0.4;
-  filter: grayscale(1) brightness(1.5) contrast(1.25);
-  transition: opacity 0.5s ease-out, filter 0.5s ease-out;
-  cursor: pointer;
+  /* O Truque do Filtro: Esbranquiça logos escuras e remove cores */
+  filter: grayscale(100%) brightness(200%) contrast(70%);
+  opacity: 0.35;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --- Fixed overlay for expanded logo --- */
-.overlay {
-  position: fixed;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  animation: overlay_in 0.4s ease-out;
+/* 5. A Revelação (Hover State) */
+.logo_wrapper:hover .logo {
+  filter: grayscale(0%) brightness(100%) contrast(100%);
+  opacity: 1;
+  transform: scale(2.0); /* Pulo muito maior, sem molde! */
 }
 
-.overlay_img {
-  height: 96px;
-  width: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 0 16px rgba(0, 0, 0, 0.7));
-}
-
-.overlay_tooltip {
-  margin-top: 8px;
-  background: rgba(0, 0, 0, 0.92);
-  color: #fff;
-  font-family: var(--font-syne);
-  font-size: 0.85rem;
-  font-weight: 600;
-  white-space: nowrap;
-  padding: 6px 14px;
+/* 6. Tooltip CSS Limpo */
+.tooltip {
+  position: absolute;
+  bottom: -55px; /* Empurrado mais para baixo para dar espaço ao zoom maior */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: var(--accent-secondary); /* Verde padrão */
+  color: #000;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
   border-radius: 4px;
-  border: 1px solid rgba(212, 160, 48, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 20;
 }
 
-@keyframes overlay_in {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+.logo_wrapper:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0); /* Animação de subir suavemente */
 }
 
+/* 7. Keyframes da Rolagem */
 @keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(calc(-50% - 32px));
-  }
+  0% { transform: translateX(0%); }
+  /* O valor do translateX deve cobrir exatamente metade da fita para o loop ser perfeito */
+  100% { transform: translateX(calc(-50% - 3rem)); } 
 }
 
 @media (max-width: 768px) {
   .section {
     padding: 60px 0 40px;
+    gap: 3rem;
   }
 
   .title {
@@ -157,28 +156,20 @@
   }
 
   .marquee_track {
-    gap: 40px;
-    animation-duration: 30s;
+    gap: 3rem;
   }
 
   .logo_wrapper {
-    height: 36px;
+    width: 100px;
   }
 
   .logo {
     height: 36px;
   }
 
-  .overlay_img {
-    height: 72px;
-  }
-
-  .overlay_tooltip {
-    font-size: 0.75rem;
-  }
-
-  .fade_left,
-  .fade_right {
-    width: 60px;
+  .tooltip {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    bottom: -40px; /* Push down to fit zoom */
   }
 }
