@@ -18,14 +18,7 @@
   right: 30px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   z-index: 10;
-}
-
-.header_left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
 }
 
 .lang_selector {
@@ -36,6 +29,7 @@
   border-radius: 100px;
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .nav_links {
@@ -46,6 +40,7 @@
   border-radius: 100px;
   backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
 }
 
 .nav_links a {
@@ -63,55 +58,67 @@
   color: var(--accent);
 }
 
+/* Spacer between nav and actions */
+.header_actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.menu_toggle {
+  display: none;
+}
+
 @media (max-width: 768px) {
+  /* Mobile: idioma > espaco > instagram > hamburger */
   .header {
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    position: relative;
-    top: 0;
-    left: 0;
-    right: 0;
-    margin-bottom: -10px;
-    padding: 0 10px;
-    /* FIXO: O header sempre ocupa a mesma altura independente do idioma */
-    min-height: 90px;
+    flex-direction: row;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    padding: 0;
   }
 
-  .header_left {
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    align-items: center;
-  }
-
-  /* A pílula do seletor de idioma: tamanho fixo */
   .lang_selector {
     height: 36px;
-    flex-shrink: 0;
-  }
-
-  /* A pílula do menu: SEMPRE a mesma largura (viewport - margens), nunca muda */
-  .nav_links {
-    height: 36px;
-    width: calc(100vw - 40px); /* Viewport direto: sempre igual, qualquer idioma */
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 0 12px;
-    justify-content: space-between;
+    padding: 6px 12px;
     align-items: center;
-    flex-wrap: nowrap;
-    box-sizing: border-box;
     flex-shrink: 0;
   }
 
-  .nav_links a {
-    flex: 1;
-    text-align: center;
-    white-space: nowrap;
-    /* Fonte escala dentro do espaço disponível, com limite máximo */
-    font-size: clamp(8px, 3vw, 11px);
-    letter-spacing: 0;
+  .nav_links {
+    display: none;
+  }
+
+  .header_actions {
+    display: flex;
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .menu_toggle {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 100px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .menu_toggle:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .main {
+    padding: 100px 15px 40px;
   }
 }
 
@@ -197,7 +204,7 @@
 
 .logo_container {
   margin: 10px 0;
-  filter: drop-shadow(0 0 30px rgba(255, 77, 0, 0.15));
+  filter: drop-shadow(0 0 30px rgba(212, 160, 48, 0.15));
 }
 
 .copy_container {
@@ -225,7 +232,7 @@
   align-items: center;
   justify-content: center;
   padding: 18px 48px;
-  background: linear-gradient(135deg, #ff4d00 0%, #ff8c00 100%);
+  background: var(--accent-secondary);
   color: #fff;
   border-radius: 100px;
   font-size: 1rem;
@@ -234,13 +241,13 @@
   text-transform: uppercase;
   letter-spacing: 0.15em;
   font-family: var(--font-syne);
-  box-shadow: 0 10px 30px rgba(255, 77, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(140, 137, 101, 0.2);
   text-decoration: none;
 }
 
 .whatsapp_btn:hover {
   transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 20px 40px rgba(255, 77, 0, 0.6);
+  box-shadow: 0 20px 40px rgba(140, 137, 101, 0.35);
   filter: brightness(1.1);
 }
 
@@ -271,15 +278,57 @@
   font-family: var(--font-syne);
 }
 
-@media (max-width: 768px) {
-  .header {
-    top: 15px;
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%);
-  }
+/* Mobile overlay menu */
+.mobile_overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
 
-  .main {
-    padding: 80px 15px 40px;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.overlay_close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px;
+  transition: color 0.3s ease;
+}
+
+.overlay_close:hover {
+  color: var(--accent);
+}
+
+.overlay_links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+}
+
+.overlay_links a {
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-family: var(--font-syne);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.overlay_links a:hover {
+  color: var(--accent);
 }

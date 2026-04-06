@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Inter, Syne } from "next/font/google";
+import { Inter, Syne, Archivo_Black } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
@@ -11,6 +11,12 @@ const syne = Syne({
   subsets: ["latin"],
   variable: "--font-syne",
   weight: ["700", "800"],
+});
+
+const archivoBlack = Archivo_Black({
+  subsets: ["latin"],
+  variable: "--font-archivo",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -40,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${syne.variable}`}>
+    <html lang="pt-BR" className={`${inter.variable} ${syne.variable} ${archivoBlack.variable}`}>
       <body suppressHydrationWarning>{children}</body>
     </html>
   );

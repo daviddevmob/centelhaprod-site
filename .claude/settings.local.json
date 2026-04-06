@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(while read:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/useradmin/Documents/GitHub/centelhaprod-site/**)",
+      "Bash(done)",
+      "Bash(curl -s https://rss.app/feeds/v1.1/SOLnLUX4m1gupfUe.json)",
+      "Bash(curl -s https://www.instagram.com/centelhaprod/ -H 'User-Agent: Mozilla/5.0')",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); items=data.get\\(''''items'''',[]\\); print\\(f''''Items: {len\\(items\\)}''''\\); [print\\(f''''{i[\"\"get\\(\"\"url\"\",\"\"\"\"\\)} | {item.get\\(\"\"id\"\",\"\"\"\"\\)}''''\\) for item in items[:10]]\")",
+      "Bash(find C:UsersuseradminDocumentsGitHubcentelhaprod-sitepublic -type f \\\\\\(-name *.mp4 -o -name *.jpeg -o -name *.png -o -name *.jpg \\\\\\))",
+      "Bash(curl -s https://api.rss.app/v2/11123727574767195/rss/centelhaprod-instagram?items=1 --max-time 5)",
+      "Bash(curl -s https://api.rss.app/v2/11123727574767195/rss-api/centelhaprod-instagram?items=1 --max-time 5)",
+      "Bash(curl -s https://registry.npmjs.org/instagram-scraper-api --max-time 10)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\(''''version'''',''''?''''\\)\\)\")",
+      "Bash(curl -s https://cdn.jsdelivr.net/npm/instagram-scraper-api/package.json --max-time 10)",
+      "Bash(npm install:*)",
+      "Bash(curl:*)",
+      "Bash(node -e \"const {instagram} = require\\(''instagram-scraper-api''\\); instagram.user\\(''centelhaprod''\\).then\\(d => { console.log\\(JSON.stringify\\({posts: d.posts?.slice\\(0,6\\).map\\(p => \\({shortcode: p.shortcode, photo: p.photo, isVideo: p.isVideo}\\)\\)}\\)\\); }\\).catch\\(e => console.error\\(''ERROR:'', e.message\\)\\);\")",
+      "Bash(node -e \"const f = require\\(''cross-fetch''\\); f.default\\(''https://www.instagram.com/centelhaprod/?__a=1&__d=dis''\\).then\\(r => r.text\\(\\)\\).then\\(t => { try { const j = JSON.parse\\(t\\); const items = j?.graphql?.user?.edge_owner_to_timeline_media?.edges; console.log\\(items?.length || 0, ''posts found''\\); if\\(items?.length\\) console.log\\(JSON.stringify\\(items.slice\\(0,3\\).map\\(i => \\({shortcode: i.node.shortcode, photo: i.node.display_url, isVideo: i.node.is_video}\\)\\)\\)\\); } catch\\(e\\) { console.log\\(''Not JSON, length:'', t.length\\); } }\\).catch\\(e => console.error\\(''ERROR:'', e.message\\)\\);\")"
+    ]
+  }
+}
