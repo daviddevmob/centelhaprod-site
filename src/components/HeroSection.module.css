@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: row-reverse; /* Reverte porque o slider vem primeiro no HTML agora */
+  flex-direction: row-reverse;
   gap: 50px;
   margin-top: 40px;
   padding: 0 40px;
@@ -15,10 +15,8 @@
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  background-color: transparent; /* Permite ver o vídeo se o scroll passar */
 }
 
-/* --- TEXTO --- */
 .content_side {
   flex: 1;
   display: flex;
@@ -27,7 +25,6 @@
   text-align: left;
   z-index: 5;
   max-width: 480px;
-  position: relative;
 }
 
 .logo_wrapper {
@@ -50,6 +47,15 @@
   margin-bottom: 36px;
 }
 
+.subtitle strong {
+  color: #b0a574;
+  font-family: var(--font-syne);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px rgba(176, 165, 116, 0.4);
+}
+
 .cta_btn {
   display: inline-flex;
   align-items: center;
@@ -69,7 +75,7 @@
   border: none;
 }
 
-/* --- SLIDER WIDESCREEN --- */
+/* --- SLIDER WIDESCREEN (16:9) --- */
 .slider_side {
   flex: 1.5;
   display: flex;
@@ -77,7 +83,6 @@
   height: auto; 
   width: 100%;
   aspect-ratio: 16 / 9;
-  position: relative;
 }
 
 .slider_wrapper {
@@ -110,7 +115,7 @@
   pointer-events: none;
 }
 
-/* Paginação */
+/* Paginação Desktop */
 .pagination {
   position: absolute;
   bottom: 24px;
@@ -143,14 +148,13 @@
   .hero_container {
     padding: 0;
     margin-top: 0; 
+    height: 100vh;
+    height: 100dvh; 
     width: 100vw !important;
+    max-width: none !important;
     margin-left: calc(-50vw + 50%) !important;
     margin-right: calc(-50vw + 50%) !important;
-    min-height: 100dvh; 
     display: block; 
-    position: relative;
-    overflow: hidden;
-    background: #000;
   }
 
   .slider_side {
@@ -161,7 +165,6 @@
     height: 100%;
     aspect-ratio: auto;
     z-index: 1;
-    display: block;
   }
 
   .slider_wrapper {
@@ -170,78 +173,74 @@
     box-shadow: none;
   }
 
-  /* 1. O Gradiente: Precisa subir mais e ser mais agressivo na base */
+  /* Gradiente mais alto e escuro para legibilidade perfeita */
   .slider_wrapper::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 2;
     background: linear-gradient(
       to top, 
-      rgba(0,0,0,1) 0%,        /* Base totalmente preta (protege o CTA) */
-      rgba(0,0,0,0.85) 35%,    /* Escuro intenso (protege texto e logo) */
-      rgba(0,0,0,0.4) 60%,     /* Transição suave */
+      rgba(0,0,0,1) 0%, 
+      rgba(0,0,0,0.85) 35%, 
+      rgba(0,0,0,0.4) 60%, 
       transparent 100%
     );
-    pointer-events: none;
   }
 
-  /* 2. O Bloco de Conteúdo: Mais respiro interno e Safe Area na base */
+  /* Bloco de conteúdo alinhado estritamente à esquerda e colado na base */
   .content_side {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: auto;
-    /* Topo 0, Direita 24px, Fundo 48px (Safe Area), Esquerda 24px */
-    padding: 0 24px 48px 24px; 
+    padding: 0 24px 48px 24px; /* Respiro Bottom Safe Area */
     z-index: 10;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
-    max-width: 100%;
-    text-align: left;
   }
 
-  /* 3. O Logo: Ligeiramente menor e com mais espaço abaixo */
   .logo_wrapper {
-    width: 180px; /* Reduzido para não gritar na tela */
-    margin-bottom: 32px; /* Distância dobrada entre logo e texto */
-    align-self: flex-start;
+    width: 180px; 
+    margin-bottom: 32px;
+    margin-left: 0; 
   }
 
-  /* 4. O Texto: Ajuste fino de leitura e margem */
   .subtitle {
     font-size: 1.05rem;
-    line-height: 1.4;
-    margin-bottom: 40px; /* Distância enorme antes do CTA para dar destaque */
+    margin-bottom: 40px; 
     color: rgba(255, 255, 255, 0.95); 
-    text-shadow: 0 2px 6px rgba(0,0,0,0.9); /* Sombra mais forte */
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+    line-height: 1.4;
     opacity: 1 !important;
-    text-align: left;
-    max-width: 100%;
   }
 
-  /* 5. O Botão: Mantém full-width mas se beneficia do padding do content_side */
   .cta_btn {
-    display: inline-flex;
-    width: 100% !important; 
-    padding: 18px; /* Levemente mais gordinho para facilitar o toque */
+    width: 100%; 
+    padding: 18px; 
     font-size: 0.9rem;
     font-weight: 800;
-    margin: 0;
   }
 
-  /* 6. As Bolinhas: Reposicionadas para não brigar com o texto */
+  /* Bolinhas alinhadas à direita na mesma linha imaginária do logo */
   .pagination {
-    top: auto;
-    /* Sobe as bolinhas para ficarem alinhadas ao lado do logo, ou acima dele */
-    bottom: 240px; 
+    position: absolute;
+    bottom: 195px; /* Alinhamento equilibrado com o logo */
+    right: 24px;   
     left: auto;
-    right: 24px;
-    background: transparent; /* Remove aquele fundo cinza no mobile */
+    background: transparent; 
+    padding: 0;    
+    gap: 8px;
     backdrop-filter: none;
-    z-index: 15;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  
+  .dot_active {
+    transform: scale(1.5);
+    background: #fff;
   }
 }

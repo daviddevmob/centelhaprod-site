@@ -26,17 +26,28 @@ const TRANSLATIONS = {
   }
 };
 
+// Array Híbrido: Aponta as duas versões da Direção de Arte
 const HERO_IMAGES = [
-  '/hero/slide-1.webp',
-  '/hero/slide-2.webp',
-  '/hero/slide-3.webp',
-  '/hero/slide-4.webp'
+  { desktop: '/hero/slide-1.webp', mobile: '/hero/mobile_1.webp' },
+  { desktop: '/hero/slide-2.webp', mobile: '/hero/mobile_2.webp' },
+  { desktop: '/hero/slide-3.webp', mobile: '/hero/mobile_3.webp' },
+  { desktop: '/hero/slide-4.webp', mobile: '/hero/mobile_4.webp' }
 ];
 
 export default function HeroSection({ lang }: HeroProps) {
   const t = TRANSLATIONS[lang] || TRANSLATIONS.pt;
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // Detecta o tamanho da tela de forma segura no Next.js
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    handleResize(); // Checagem inicial
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Auto-play do slider
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % HERO_IMAGES.length);
@@ -47,7 +58,7 @@ export default function HeroSection({ lang }: HeroProps) {
   return (
     <section className={styles.hero_container}>
       
-      {/* LADO DIREITO/FUNDO: O Slider vem primeiro na DOM para o mobile o tratar como background */}
+      {/* LADO DIREITO/FUNDO: Slider Animado */}
       <motion.div 
         className={styles.slider_side}
         initial={{ opacity: 0 }}
@@ -57,8 +68,9 @@ export default function HeroSection({ lang }: HeroProps) {
         <div className={styles.slider_wrapper}>
           <AnimatePresence mode="wait">
             <motion.img
-              key={currentIndex}
-              src={HERO_IMAGES[currentIndex]}
+              key={`${currentIndex}-${isMobile}`}
+              // Alterna a imagem baseada no device
+              src={isMobile ? HERO_IMAGES[currentIndex].mobile : HERO_IMAGES[currentIndex].desktop}
               alt={`Centelha Portfolio ${currentIndex + 1}`}
               className={styles.slider_image}
               initial={{ opacity: 0, scale: 1.05 }}
