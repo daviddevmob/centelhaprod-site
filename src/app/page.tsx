@@ -14,6 +14,7 @@ const OQueFazemos = dynamic(() => import("../components/ComoTrabalhamos"));
 const ComoFazemos = dynamic(() => import("../components/ComoFazemos"));
 const CinematicVideo = dynamic(() => import("../components/CinematicVideo"));
 const PartnerMarquee = dynamic(() => import("../components/PartnerMarquee"));
+const HeroSection = dynamic(() => import("../components/HeroSection"));
 
 type Lang = 'pt' | 'en' | 'es';
 
@@ -106,8 +107,9 @@ export default function Home() {
         </div>
       )}
 
+      {/* BACKGROUND GLOBAL: LENTE DA CÂMERA */}
       {mounted && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+        <div className={styles.video_background_container}>
           <video
             autoPlay
             muted
@@ -120,53 +122,11 @@ export default function Home() {
             <source src="/CameraLens.mp4" type="video/mp4" />
           </video>
           <div className={styles.video_overlay} />
-        </motion.div>
+        </div>
       )}
 
-      <motion.div
-        className={styles.logo_container}
-        variants={fadeUpVariant}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.2 }}
-      >
-        <Image
-          src="/centelha-logo.png"
-          alt="CentelhaProd Logo"
-          width={370}
-          height={370}
-          priority
-          style={{ objectFit: 'contain' }}
-        />
-      </motion.div>
-
-      <motion.div
-        className={styles.copy_container}
-        variants={fadeUpVariant}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.4 }}
-      >
-        <p
-          className={styles.subtitle}
-          dangerouslySetInnerHTML={{ __html: t.subtitle }}
-        />
-      </motion.div>
-
-      <motion.a
-        href="https://wa.me/5585987172446"
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.whatsapp_btn}
-        variants={fadeUpVariant}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.6 }}
-        whileHover={{ scale: 1.05, y: -4 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {t.cta_whatsapp}
-      </motion.a>
+      {/* NOVO HERO DINÂMICO (Split-Screen) */}
+      <HeroSection lang={lang} />
 
       <QuemSomos lang={lang} />
 

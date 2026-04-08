@@ -1,0 +1,247 @@
+/* =========================================
+   DESKTOP (SPLIT-SCREEN CLASSIC)
+   ========================================= */
+.hero_container {
+  width: 100%;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row-reverse; /* Reverte porque o slider vem primeiro no HTML agora */
+  gap: 50px;
+  margin-top: 40px;
+  padding: 0 40px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  background-color: transparent; /* Permite ver o vídeo se o scroll passar */
+}
+
+/* --- TEXTO --- */
+.content_side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  z-index: 5;
+  max-width: 480px;
+  position: relative;
+}
+
+.logo_wrapper {
+  margin-bottom: 24px;
+  width: 260px;
+  filter: drop-shadow(0 0 30px rgba(212, 160, 48, 0.15));
+}
+
+.logo_img {
+  width: 100%;
+  height: auto;
+}
+
+.subtitle {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  line-height: 1.35;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin-bottom: 36px;
+}
+
+.cta_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 48px;
+  background: var(--accent-secondary);
+  color: #fff;
+  border-radius: 100px;
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-family: var(--font-syne);
+  box-shadow: 0 10px 30px rgba(140, 137, 101, 0.2);
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
+/* --- SLIDER WIDESCREEN --- */
+.slider_side {
+  flex: 1.5;
+  display: flex;
+  justify-content: flex-end;
+  height: auto; 
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  position: relative;
+}
+
+.slider_wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.slider_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  filter: grayscale(15%) brightness(0.9) contrast(1.1);
+}
+
+.slider_wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: 
+    linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.5) 100%),
+    linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* Paginação */
+.pagination {
+  position: absolute;
+  bottom: 24px;
+  left: 32px;
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot_active {
+  background: #fff;
+  transform: scale(1.4);
+}
+
+/* =========================================
+   MOBILE (IMMERSIVE FULL-BLEED POSTER)
+   ========================================= */
+@media (max-width: 1024px) {
+  .hero_container {
+    padding: 0;
+    margin-top: 0; 
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    min-height: 100dvh; 
+    display: block; 
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .slider_side {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    z-index: 1;
+    display: block;
+  }
+
+  .slider_wrapper {
+    border-radius: 0; 
+    border: none;
+    box-shadow: none;
+  }
+
+  /* 1. O Gradiente: Precisa subir mais e ser mais agressivo na base */
+  .slider_wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      to top, 
+      rgba(0,0,0,1) 0%,        /* Base totalmente preta (protege o CTA) */
+      rgba(0,0,0,0.85) 35%,    /* Escuro intenso (protege texto e logo) */
+      rgba(0,0,0,0.4) 60%,     /* Transição suave */
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  /* 2. O Bloco de Conteúdo: Mais respiro interno e Safe Area na base */
+  .content_side {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    /* Topo 0, Direita 24px, Fundo 48px (Safe Area), Esquerda 24px */
+    padding: 0 24px 48px 24px; 
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    max-width: 100%;
+    text-align: left;
+  }
+
+  /* 3. O Logo: Ligeiramente menor e com mais espaço abaixo */
+  .logo_wrapper {
+    width: 180px; /* Reduzido para não gritar na tela */
+    margin-bottom: 32px; /* Distância dobrada entre logo e texto */
+    align-self: flex-start;
+  }
+
+  /* 4. O Texto: Ajuste fino de leitura e margem */
+  .subtitle {
+    font-size: 1.05rem;
+    line-height: 1.4;
+    margin-bottom: 40px; /* Distância enorme antes do CTA para dar destaque */
+    color: rgba(255, 255, 255, 0.95); 
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9); /* Sombra mais forte */
+    opacity: 1 !important;
+    text-align: left;
+    max-width: 100%;
+  }
+
+  /* 5. O Botão: Mantém full-width mas se beneficia do padding do content_side */
+  .cta_btn {
+    display: inline-flex;
+    width: 100% !important; 
+    padding: 18px; /* Levemente mais gordinho para facilitar o toque */
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  /* 6. As Bolinhas: Reposicionadas para não brigar com o texto */
+  .pagination {
+    top: auto;
+    /* Sobe as bolinhas para ficarem alinhadas ao lado do logo, ou acima dele */
+    bottom: 240px; 
+    left: auto;
+    right: 24px;
+    background: transparent; /* Remove aquele fundo cinza no mobile */
+    backdrop-filter: none;
+    z-index: 15;
+  }
+}

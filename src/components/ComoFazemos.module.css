@@ -90,23 +90,43 @@
   font-family: var(--font-inter);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .section {
-    margin: 60px auto;
-    padding: 0 24px;
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    margin-right: calc(-50vw + 50%) !important;
+    min-height: auto;
+    padding: 60px 24px;
+    background: #000;
+    overflow: hidden;
   }
 
   .item {
     gap: 16px;
     padding: 28px 0;
+    align-items: flex-start;
   }
 
   .number {
     min-width: 44px;
+    /* Outline dourado translúcido solicitado */
+    -webkit-text-stroke: 1px rgba(176, 165, 116, 0.4);
+    color: transparent;
+    opacity: 1 !important;
+  }
+
+  .item_title {
+    color: #fff; /* Brancão total */
+    opacity: 1 !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    font-size: 1.15rem;
   }
 
   .item_desc {
+    color: rgba(255, 255, 255, 0.85); /* Cinza muito claro */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     line-height: 1.6;
+    opacity: 1 !important;
   }
 }
 
