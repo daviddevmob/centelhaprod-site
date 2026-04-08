@@ -107,7 +107,7 @@ export default function CinematicVideo({ lang }: CinematicVideoProps) {
 
   // 4. Update Frame on Scroll
   useMotionValueEvent(smoothProgress, "change", (latest) => {
-    if (imagesLoaded < FRAME_COUNT) return;
+    if (imagesLoaded === 0) return; // Só bloqueia se não houver NENHUMA imagem
     
     const frameIndex = Math.min(
       FRAME_COUNT - 1,
@@ -154,16 +154,17 @@ export default function CinematicVideo({ lang }: CinematicVideoProps) {
            <canvas 
              ref={canvasRef} 
              className={styles.videoElement}
-             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+             style={{ 
+               width: '100%', 
+               height: '100%', 
+               objectFit: 'cover',
+               opacity: imagesLoaded > 0 ? 1 : 0 // Aparece assim que o primeiro frame existe
+             }}
            />
            
-           {/* Progress Indicator (Sutil) */}
-           {imagesLoaded < FRAME_COUNT && (
-             <div className="absolute inset-0 flex items-center justify-center bg-black">
-                <p className="text-white/20 text-xs font-mono uppercase tracking-widest">
-                  Loading Experience {Math.round((imagesLoaded / FRAME_COUNT) * 100)}%
-                </p>
-             </div>
+           {/* Fundo de fallback sutil enquanto o primeiro frame não chega */}
+           {imagesLoaded === 0 && (
+             <div className="absolute inset-0 bg-black/20" />
            )}
 
            <div className={styles.overlay} />
