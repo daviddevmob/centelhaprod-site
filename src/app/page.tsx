@@ -133,8 +133,8 @@ export default function Home() {
         <Image
           src="/centelha-logo.png"
           alt="CentelhaProd Logo"
-          width={280}
-          height={280}
+          width={370}
+          height={370}
           priority
           style={{ objectFit: 'contain' }}
         />
@@ -192,11 +192,11 @@ export default function Home() {
         <ComoFazemos lang={lang} />
       </motion.div>
 
-      <InstaGallery />
+      {/* <InstaGallery /> */}
 
       <PartnerMarquee />
 
-      <motion.div
+      {/* <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -204,7 +204,7 @@ export default function Home() {
         style={{ width: "100%" }}
       >
         <AlbumSection lang={lang} />
-      </motion.div>
+      </motion.div> */}
 
       <motion.div
         initial="hidden"
