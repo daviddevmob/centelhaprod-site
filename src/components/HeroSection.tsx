@@ -66,7 +66,7 @@ export default function HeroSection({ lang }: HeroProps) {
         transition={{ duration: 1 }}
       >
         <div className={styles.slider_wrapper}>
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             <motion.img
               key={`${currentIndex}-${isMobile}`}
               // Alterna a imagem baseada no device
