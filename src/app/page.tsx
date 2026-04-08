@@ -12,6 +12,7 @@ const InstaGallery = dynamic(() => import("../components/InstaGallery"));
 const QuemSomos = dynamic(() => import("../components/QuemSomos"));
 const OQueFazemos = dynamic(() => import("../components/ComoTrabalhamos"));
 const ComoFazemos = dynamic(() => import("../components/ComoFazemos"));
+const CinematicVideo = dynamic(() => import("../components/CinematicVideo"));
 const PartnerMarquee = dynamic(() => import("../components/PartnerMarquee"));
 
 type Lang = 'pt' | 'en' | 'es';
@@ -178,6 +179,8 @@ export default function Home() {
       >
         <OQueFazemos lang={lang} />
       </motion.div>
+
+      <CinematicVideo lang={lang} />
 
       <motion.div
         initial="hidden"
