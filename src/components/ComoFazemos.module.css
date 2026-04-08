@@ -109,3 +109,66 @@
     line-height: 1.6;
   }
 }
+
+.world_block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  background: rgba(255, 255, 255, 0.02); /* Fundo super sutil */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 40px 60px;
+  margin-bottom: 60px; /* Distância antes de começar a lista 01, 02... */
+}
+
+.world_text {
+  flex: 1;
+  max-width: 400px;
+}
+
+.world_title {
+  color: #b0a574; /* Destaque dourado/oliva */
+  font-family: var(--font-syne);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  line-height: 1.1;
+}
+
+.world_desc {
+  color: #ccc;
+  font-family: var(--font-inter);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.globe_container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Reduzimos o black para 65% para o esfumaçado nas bordas ficar mais orgânico e luxuoso */
+  mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 65%, transparent 100%);
+}
+
+@media (max-width: 900px) {
+  .world_block {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  
+  .world_text {
+    max-width: 100%;
+  }
+  
+  .globe_container {
+    width: 100%;
+    /* Aumentamos levemente para dar mais impacto no mobile */
+    max-width: 340px; 
+    margin: 0 auto;
+  }
+}

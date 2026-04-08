@@ -115,6 +115,7 @@ export default function Home() {
             preload="auto"
             className={styles.video_bg}
           >
+            <source src="/CameraLens.webm" type="video/webm" />
             <source src="/CameraLens.mp4" type="video/mp4" />
           </video>
           <div className={styles.video_overlay} />

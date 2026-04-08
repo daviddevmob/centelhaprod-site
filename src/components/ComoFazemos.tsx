@@ -1,31 +1,41 @@
+'use client';
+
 import { motion } from "framer-motion";
 import styles from "./ComoFazemos.module.css";
+import Globe from "./Globe"; // Importando o globo
 
 type Lang = "pt" | "en" | "es";
 
+// Traduções atualizadas
 const TRANSLATIONS = {
-  pt: [
-    { title: "Equipe Completa", desc: "Acompanhamos seu evento com um time especializado: videomakers, editores e diretores atentos a cada detalhe." },
-    { title: "Captação Dinâmica", desc: "Registramos a essência, a luz e a alegria do momento, incluindo coberturas aéreas (drone) e bastidores." },
-    { title: "Pós-Produção", desc: "Edição ágil e narrativa autêntica para entregar o melhor material bruto e decupado." },
-    { title: "Entrega de Valor", desc: "Produzimos Aftermovies institucionais e Reels dinâmicos focados em engajar suas redes sociais." }
-  ],
-  en: [
-    { title: "Full Team", desc: "We cover your event with a specialized team: videomakers, editors, and directors attentive to every detail." },
-    { title: "Dynamic Capture", desc: "We capture the essence, light, and joy of the moment, including aerial (drone) and behind-the-scenes footage." },
-    { title: "Post-Production", desc: "Agile editing and authentic storytelling to deliver the best raw and selected material." },
-    { title: "Value Delivery", desc: "We produce institutional Aftermovies and dynamic Reels focused on engaging your social media." }
-  ],
-  es: [
-    { title: "Equipo Completo", desc: "Acompañamos tu evento con un equipo especializado: videógrafos, editores y directores atentos a cada detalle." },
-    { title: "Captación Dinámica", desc: "Registramos la esencia, la luz y la alegría del momento, incluyendo coberturas aéreas (dron) y detrás de escena." },
-    { title: "Post-Producción", desc: "Edición ágil y narrativa auténtica para entregar el mejor material en bruto y seleccionado." },
-    { title: "Entrega de Valor", desc: "Producimos Aftermovies institucionales y Reels dinámicos enfocados en generar interacción en tus redes sociales." }
-  ]
+  pt: {
+    intro: { title: "Somos do mundo", desc: "Já atendemos + de 8 cidades, dentro e fora do Brasil." },
+    items: [
+      { title: "Equipe completa", desc: "Contamos com uma equipe especializada de videomakers, fotógrafos, editores e outros profissionais envolvidos para garantir que o seu projeto aconteça com excelência." },
+      { title: "Somos desenrolados", desc: "Na Centelha, não existem obstáculos. Sua ideia vai se tornar real. Somos comprometidos com cada projeto e cuidamos de tudo, do roteiro à edição para fazer a sua ideia acontecer!" },
+      { title: "Entrega de valor", desc: "Nosso objetivo é gerar resultados, seja em vendas ou posicionamento de marca. Criamos produções que impactam o seu cliente e fortalecem sua presença no mercado." }
+    ]
+  },
+  en: {
+    intro: { title: "We are from the world", desc: "We have already served more than 8 cities, inside and outside Brazil." },
+    items: [
+      { title: "Complete team", desc: "We have a specialized team of videomakers, photographers, editors and other professionals involved to ensure that your project happens with excellence." },
+      { title: "We are versatile", desc: "At Centelha, there are no obstacles. Your idea will become real. We are committed to each project and take care of everything, from script to editing, to make your idea happen!" },
+      { title: "Value delivery", desc: "Our goal is to generate results, whether in sales or brand positioning. We create productions that impact your client and strengthen your presence in the market." }
+    ]
+  },
+  es: {
+    intro: { title: "Somos del mundo", desc: "Ya hemos atendido a más de 8 ciudades, dentro y fuera de Brasil." },
+    items: [
+      { title: "Equipo completo", desc: "Contamos con un equipo especializado de videógrafos, fotógrafos, editores y otros profesionales involucrados para asegurar que su proyecto se realice con excelencia." },
+      { title: "Somos resolutivos", desc: "En Centelha, no hay obstáculos. Tu idea se hará realidad. ¡Estamos comprometidos con cada proyecto y nos encargamos de todo, desde el guion hasta la edición para que tu idea suceda!" },
+      { title: "Entrega de valor", desc: "Nuestro objetivo es generar resultados, ya sea en ventas o posicionamiento de marca. Creamos producciones que impactan a su cliente y fortalecen su presencia en el mercado." }
+    ]
+  }
 };
 
 export default function ComoFazemos({ lang = "pt" }: { lang?: Lang }) {
-  const t = TRANSLATIONS[lang];
+  const content = TRANSLATIONS[lang] || TRANSLATIONS["pt"];
 
   return (
     <section id="como-fazemos" className={styles.section}>
@@ -46,8 +56,32 @@ export default function ComoFazemos({ lang = "pt" }: { lang?: Lang }) {
         />
       </motion.div>
 
+      {/* NOVO: Bloco do Globo (Hero da Seção) */}
+      <div className={styles.world_block}>
+        <motion.div 
+          className={styles.world_text}
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+        >
+          <h3 className={styles.world_title}>{content.intro.title}</h3>
+          <p className={styles.world_desc}>{content.intro.desc}</p>
+        </motion.div>
+        
+        <motion.div 
+          className={styles.globe_container}
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+        >
+          <Globe />
+        </motion.div>
+      </div>
+
+      {/* Lista Numerada Atualizada */}
       <div className={styles.items}>
-        {t.map((item, idx) => (
+        {content.items.map((item, idx) => (
           <NumberedBlock
             key={`${lang}-${idx}`}
             index={idx}
@@ -79,3 +113,4 @@ function NumberedBlock({ index, title, desc }: { index: number; title: string; d
     </motion.div>
   );
 }
+
