@@ -1,35 +1,86 @@
-/* =========================================
-   DESKTOP (SPLIT-SCREEN CLASSIC)
-   ========================================= */
+/* =================================================###########
+   BASE DO HERO (Unificado - Estilo Mobile Poster / Full-Bleed)
+   =================================================########### */
 .hero_container {
-  width: 100%;
-  min-height: 85vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row-reverse;
-  gap: 50px;
-  margin-top: 40px;
-  padding: 0 40px;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
   position: relative;
+  /* Solução Atômica de Viewport: Força 100vw independente do pai */
+  width: 100vw !important;
+  max-width: 100vw !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+  
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background-color: #000;
+  display: block;
 }
 
+/* === FUNDO (Slider Animado) === */
+.slider_side {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Espelhamos o 100vw aqui também para garantir o preenchimento */
+  width: 100vw !important;
+  height: 100%;
+  z-index: 1;
+}
+
+.slider_wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  overflow: hidden;
+  box-shadow: none;
+  background: #000;
+}
+
+/* MÁSCARA CINEMATOGRÁFICA DE LEITURA (Obrigatória) */
+.slider_wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: 
+    linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0.4) 35%, transparent 50%),
+    linear-gradient(to right, rgba(0,0,0,0.4) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.4) 100%);
+}
+
+.slider_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  filter: grayscale(15%) brightness(0.9) contrast(1.1);
+}
+
+/* === TEXTO (Ancorado na Base) === */
 .content_side {
-  flex: 1;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: auto;
+  z-index: 10;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: flex-start;
   text-align: left;
-  z-index: 5;
-  max-width: 480px;
+  padding: 0 24px 48px 24px;
 }
 
 .logo_wrapper {
+  width: 180px;
   margin-bottom: 24px;
-  width: 260px;
   filter: drop-shadow(0 0 30px rgba(212, 160, 48, 0.15));
 }
 
@@ -39,12 +90,13 @@
 }
 
 .subtitle {
-  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
-  line-height: 1.35;
+  font-size: 1.05rem;
+  line-height: 1.4;
   color: #fff;
   font-weight: 500;
   letter-spacing: -0.03em;
-  margin-bottom: 36px;
+  margin-bottom: 32px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.9);
 }
 
 .subtitle strong {
@@ -60,75 +112,36 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 18px 48px;
   background: var(--accent-secondary);
   color: #fff;
   border-radius: 100px;
-  font-size: 1rem;
+  font-family: var(--font-syne);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  font-family: var(--font-syne);
   box-shadow: 0 10px 30px rgba(140, 137, 101, 0.2);
   text-decoration: none;
   cursor: pointer;
+  width: 100%;
+  padding: 16px;
+  font-size: 0.9rem;
   border: none;
 }
 
-/* --- SLIDER WIDESCREEN (16:9) --- */
-.slider_side {
-  flex: 1.5;
-  display: flex;
-  justify-content: flex-end;
-  height: auto; 
-  width: 100%;
-  aspect-ratio: 16 / 9;
-}
-
-.slider_wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: #000; /* Fundo sólido para evitar transparência no cross-fade */
-}
-
-.slider_image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  inset: 0;
-  filter: grayscale(15%) brightness(0.9) contrast(1.1);
-}
-
-.slider_wrapper::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  background: 
-    linear-gradient(to right, rgba(0,0,0,0.5) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.5) 100%),
-    linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%);
-  pointer-events: none;
-}
-
-/* Paginação Desktop */
+/* === PAGINAÇÃO (Bolinhas) === */
 .pagination {
   position: absolute;
-  bottom: 24px;
-  left: 32px;
+  z-index: 15;
   display: flex;
-  gap: 12px;
-  z-index: 10;
+  gap: 8px;
+  bottom: 240px; 
+  right: 24px;
+  left: auto;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.3);
   border: none;
@@ -142,106 +155,53 @@
   transform: scale(1.4);
 }
 
-/* =========================================
-   MOBILE (IMMERSIVE FULL-BLEED POSTER)
-   ========================================= */
-@media (max-width: 1024px) {
+/* =================================================###########
+   QUEBRA DESKTOP (Fine-Tuning de Escala e Posição)
+   =================================================########### */
+@media (min-width: 1024px) {
   .hero_container {
-    padding: 0;
-    margin-top: 0; 
-    height: 100vh;
-    height: 100dvh; 
-    width: 100vw !important;
-    max-width: none !important;
-    margin-left: calc(-50vw + 50%) !important;
-    margin-right: calc(-50vw + 50%) !important;
-    display: block; 
+    /* Reforço de centralização no desktop */
+    left: 50% !important;
+    margin-left: -50vw !important;
   }
 
-  .slider_side {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: auto;
-    z-index: 1;
-  }
-
-  .slider_wrapper {
-    border-radius: 0; 
-    border: none;
-    box-shadow: none;
-  }
-
-  /* Gradiente mais alto e escuro para legibilidade perfeita */
-  .slider_wrapper::before {
-    background: linear-gradient(
-      to top, 
-      rgba(0,0,0,1) 0%, 
-      rgba(0,0,0,0.85) 35%, 
-      rgba(0,0,0,0.4) 60%, 
-      transparent 100%
-    );
-  }
-
-  /* Bloco de conteúdo alinhado estritamente à esquerda e colado na base */
   .content_side {
-    position: absolute;
-    bottom: 0;
+    padding: 0 60px 80px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
     left: 0;
-    width: 100%;
-    height: auto;
-    padding: 0 24px 48px 24px; /* Respiro Bottom Safe Area */
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
+    right: 0;
   }
 
   .logo_wrapper {
-    width: 180px; 
+    width: 260px;
     margin-bottom: 32px;
-    margin-left: 0; 
   }
 
   .subtitle {
-    font-size: 1.05rem;
-    margin-bottom: 40px; 
-    color: rgba(255, 255, 255, 0.95); 
-    text-shadow: 0 2px 6px rgba(0,0,0,0.9);
-    line-height: 1.4;
-    opacity: 1 !important;
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    line-height: 1.35;
+    margin-bottom: 48px;
+    max-width: 700px;
   }
 
   .cta_btn {
-    width: 100%; 
-    padding: 18px; 
-    font-size: 0.9rem;
-    font-weight: 800;
+    width: auto !important;
+    padding: 18px 48px;
+    font-size: 1rem;
   }
 
-  /* Bolinhas alinhadas à direita na mesma linha imaginária do logo */
   .pagination {
-    position: absolute;
-    bottom: 195px; /* Alinhamento equilibrado com o logo */
-    right: 24px;   
-    left: auto;
-    background: transparent; 
-    padding: 0;    
-    gap: 8px;
-    backdrop-filter: none;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 12px;
+    right: auto;
   }
 
   .dot {
-    width: 6px;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.4);
-  }
-  
-  .dot_active {
-    transform: scale(1.5);
-    background: #fff;
+    width: 8px;
+    height: 8px;
   }
 }
