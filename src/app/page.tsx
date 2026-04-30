@@ -155,7 +155,7 @@ export default function Home() {
 
       {/* <InstaGallery /> */}
 
-      <PartnerMarquee />
+      <PartnerMarquee lang={lang} />
       
       <MediaSection lang={lang} />
 

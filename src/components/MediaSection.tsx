@@ -32,7 +32,40 @@ const FETCH_QUERY = `{
   "fotosV": *[_type == "imageGalleryVertical"] | order(_createdAt desc)
 }`;
 
+const TRANSLATIONS = {
+  pt: {
+    sectionTitle: 'Mídias',
+    loading: 'Carregando mídias...',
+    noPhotos: 'Nenhuma foto encontrada.',
+    videos: 'Vídeos',
+    shorts: 'Shorts',
+    fotosH: 'Fotos Horizontais',
+    fotosV: 'Fotos Verticais',
+  },
+  en: {
+    sectionTitle: 'Media',
+    loading: 'Loading media...',
+    noPhotos: 'No photos found.',
+    videos: 'Videos',
+    shorts: 'Shorts',
+    fotosH: 'Horizontal Photos',
+    fotosV: 'Vertical Photos',
+  },
+  es: {
+    sectionTitle: 'Medios',
+    loading: 'Cargando medios...',
+    noPhotos: 'No se encontraron fotos.',
+    videos: 'Videos',
+    shorts: 'Shorts',
+    fotosH: 'Fotos Horizontales',
+    fotosV: 'Fotos Verticales',
+  }
+};
+
+type SupportedLang = 'pt' | 'en' | 'es';
+
 export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
+  const tt = TRANSLATIONS[(lang as SupportedLang)] || TRANSLATIONS.pt;
   const [activeTab, setActiveTab] = useState<TabType>('videos');
   const [data, setData] = useState<{
     videos: YouTubeItem[];
@@ -78,16 +111,16 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
   };
 
   const tabs = [
-    { id: 'videos', label: lang === 'pt' ? 'Vídeos' : 'Videos', icon: <Video size={16} /> },
-    { id: 'shorts', label: 'Shorts', icon: <Smartphone size={16} /> },
-    { id: 'fotosH', label: lang === 'pt' ? 'Fotos Horizontais' : 'Horizontal Photos', icon: <Image size={16} /> },
-    { id: 'fotosV', label: lang === 'pt' ? 'Fotos Verticais' : 'Vertical Photos', icon: <Camera size={16} /> },
+    { id: 'videos', label: tt.videos, icon: <Video size={16} /> },
+    { id: 'shorts', label: tt.shorts, icon: <Smartphone size={16} /> },
+    { id: 'fotosH', label: tt.fotosH, icon: <Image size={16} /> },
+    { id: 'fotosV', label: tt.fotosV, icon: <Camera size={16} /> },
   ];
 
   if (loading) return (
     <section className={styles.section}>
       <div className={styles.container}>
-        <div style={{ textAlign: 'center', color: '#fff', opacity: 0.5 }}>Carregando mídias...</div>
+        <div style={{ textAlign: 'center', color: '#fff', opacity: 0.5 }}>{tt.loading}</div>
       </div>
     </section>
   );
@@ -95,7 +128,7 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
   return (
     <section className={styles.section} id="midias">
       <div className={styles.header}>
-        <h2 className={styles.title}>Mídias</h2>
+        <h2 className={styles.title}>{tt.sectionTitle}</h2>
         <div className={styles.dividers_container}>
           <div className={styles.divider} />
         </div>
@@ -203,11 +236,11 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
             )}
 
             {activeTab === 'fotosH' && (
-              <PhotoGalleries galleries={data.fotosH} cardStyle={styles.mediaCard_horizontal} onImageClick={(url, cap) => setSelectedImage({url, caption: cap})} />
+              <PhotoGalleries galleries={data.fotosH} cardStyle={styles.mediaCard_horizontal} onImageClick={(url, cap) => setSelectedImage({url, caption: cap})} noPhotosText={tt.noPhotos} />
             )}
 
             {activeTab === 'fotosV' && (
-              <PhotoGalleries galleries={data.fotosV} cardStyle={styles.mediaCard_vertical} onImageClick={(url, cap) => setSelectedImage({url, caption: cap})} />
+              <PhotoGalleries galleries={data.fotosV} cardStyle={styles.mediaCard_vertical} onImageClick={(url, cap) => setSelectedImage({url, caption: cap})} noPhotosText={tt.noPhotos} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -245,8 +278,8 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
   );
 }
 
-function PhotoGalleries({ galleries, cardStyle, onImageClick }: { galleries: ImageGallery[], cardStyle: string, onImageClick: (url: string, cap?: string) => void }) {
-  if (galleries.length === 0) return <div style={{ textAlign: 'center', color: '#666', padding: '40px 0' }}>Nenhuma foto encontrada.</div>;
+function PhotoGalleries({ galleries, cardStyle, onImageClick, noPhotosText }: { galleries: ImageGallery[], cardStyle: string, onImageClick: (url: string, cap?: string) => void, noPhotosText: string }) {
+  if (galleries.length === 0) return <div style={{ textAlign: 'center', color: '#666', padding: '40px 0' }}>{noPhotosText}</div>;
 
   return (
     <div>

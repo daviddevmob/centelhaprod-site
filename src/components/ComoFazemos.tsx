@@ -46,7 +46,7 @@ export default function ComoFazemos({ lang = "pt" }: { lang?: Lang }) {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className={styles.title}>COMO FAZEMOS</h2>
+        <h2 className={styles.title}>{lang === "pt" ? "COMO FAZEMOS" : lang === "en" ? "HOW WE DO IT" : "CÓMO LO HACEMOS"}</h2>
         <motion.div
           className={styles.divider}
           initial={{ scaleX: 0, originX: 0 }}

@@ -53,7 +53,7 @@ const PARAGRAPHS: Record<Lang, TextSegment[][]> = {
     ],
     [
       { text: "We are at the exact moment when light, skill, and chance meet in time: in the " },
-      { text: "Spark", type: "highlight" },
+      { text: "Centelha", type: "highlight" },
       { text: " of the moment. We create images that go beyond aesthetics and deliver " },
       { text: "real results", type: "bold" },
       { text: "." }
@@ -76,7 +76,7 @@ const PARAGRAPHS: Record<Lang, TextSegment[][]> = {
     ],
     [
       { text: "Estamos en el exacto momento en que la luz, la habilidad y el azar se encuentran ante el tiempo: en la " },
-      { text: "Chispa", type: "highlight" },
+      { text: "Centelha", type: "highlight" },
       { text: " del momento. Creamos imágenes que van más allá de la estética y generan " },
       { text: "resultados reales", type: "bold" },
       { text: "." }

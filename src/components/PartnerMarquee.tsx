@@ -28,16 +28,22 @@ const PARTNERS = [
   { name: 'Xeque Mate', logo: '/parceiros/xeque mate.png' },
 ];
 
-export default function PartnerMarquee() {
+export default function PartnerMarquee({ lang = 'pt' }: { lang?: string }) {
   // Duplicamos o array para criar a ilusão de rolagem infinita contínua
   const allPartners = [...PARTNERS, ...PARTNERS];
+
+  const titles: Record<string, React.ReactNode> = {
+    pt: <>Quem Acompanha Nossa <span className={styles.highlight}>Centelha</span></>,
+    en: <>Those Who Follow Our <span className={styles.highlight}>Centelha</span></>,
+    es: <>Quienes Siguen Nuestra <span className={styles.highlight}>Centelha</span></>
+  };
 
   return (
     <section className={styles.section}>
       {/* Cabeçalho da Seção */}
       <div className={styles.header}>
         <h2 className={styles.title}>
-          Quem Acompanha Nossa <span className={styles.highlight}>Centelha</span>
+          {titles[lang] || titles.pt}
         </h2>
         <div className={styles.divider} />
       </div>

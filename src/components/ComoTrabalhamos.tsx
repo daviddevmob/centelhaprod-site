@@ -33,7 +33,7 @@ export default function OQueFazemos({ lang = "pt" }: { lang?: Lang }) {
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6 }}
       >
-        <h2 className={styles.title}>O QUE FAZEMOS</h2>
+        <h2 className={styles.title}>{lang === "pt" ? "O QUE FAZEMOS" : lang === "en" ? "WHAT WE DO" : "QUÉ HACEMOS"}</h2>
         <motion.div
           className={styles.divider}
           initial={{ scaleX: 0, originX: 0 }}
