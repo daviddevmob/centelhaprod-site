@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { client, urlFor } from '../lib/sanity';
 import styles from './HeroSection.module.css';
 
 type Lang = 'pt' | 'en' | 'es';
@@ -26,18 +27,48 @@ const TRANSLATIONS = {
   }
 };
 
-// Array Híbrido: Aponta as duas versões da Direção de Arte
-const HERO_IMAGES = [
-  { desktop: '/hero/slide-1.webp', mobile: '/hero/mobile_1.webp' },
-  { desktop: '/hero/slide-2.webp', mobile: '/hero/mobile_2.webp' },
-  { desktop: '/hero/slide-3.webp', mobile: '/hero/mobile_3.webp' },
-  { desktop: '/hero/slide-4.webp', mobile: '/hero/mobile_4.webp' }
+interface HeroSlide {
+  _id: string;
+  desktopImage: any;
+  mobileImage: any;
+  isFallback?: boolean;
+}
+
+const DEFAULT_SLIDES: HeroSlide[] = [
+  { _id: 'f1', desktopImage: '/hero/slide-1.webp', mobileImage: '/hero/mobile_1.webp', isFallback: true },
+  { _id: 'f2', desktopImage: '/hero/slide-2.webp', mobileImage: '/hero/mobile_2.webp', isFallback: true },
+  { _id: 'f3', desktopImage: '/hero/slide-3.webp', mobileImage: '/hero/mobile_3.webp', isFallback: true },
+  { _id: 'f4', desktopImage: '/hero/slide-4.webp', mobileImage: '/hero/mobile_4.webp', isFallback: true },
 ];
+
+const SLIDES_QUERY = `*[_type == "heroSlide"] | order(_createdAt asc)`;
 
 export default function HeroSection({ lang }: HeroProps) {
   const t = TRANSLATIONS[lang] || TRANSLATIONS.pt;
+  const [sanitySlides, setSanitySlides] = useState<HeroSlide[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Determina quais slides usar
+  const activeSlides = (sanitySlides.length > 0) ? sanitySlides : DEFAULT_SLIDES;
+
+  // Busca slides do Sanity
+  useEffect(() => {
+    async function fetchSlides() {
+      try {
+        const data = await client.fetch(SLIDES_QUERY);
+        if (data && data.length > 0) {
+          setSanitySlides(data);
+        }
+      } catch (error) {
+        console.error('Error fetching hero slides:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSlides();
+  }, []);
 
   // Detecta o tamanho da tela de forma segura no Next.js
   useEffect(() => {
@@ -49,11 +80,32 @@ export default function HeroSection({ lang }: HeroProps) {
 
   // Auto-play do slider
   useEffect(() => {
+    if (activeSlides.length <= 1) return;
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+      setCurrentIndex((prev) => (prev + 1) % activeSlides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [activeSlides.length]);
+
+  // Helper para resolver a URL da imagem (Sanity ou Local)
+  const getImageUrl = (slide: HeroSlide, mobile: boolean) => {
+    const image = mobile ? slide.mobileImage : slide.desktopImage;
+    if (slide.isFallback) {
+      return image; // É o path local direto
+    }
+    try {
+      return urlFor(image).width(mobile ? 800 : 1920).quality(90).url();
+    } catch (e) {
+      // Caso o slide do Sanity exista mas a imagem falhe, usa o fallback correspondente
+      const fallbackIdx = activeSlides.indexOf(slide) % DEFAULT_SLIDES.length;
+      return mobile ? DEFAULT_SLIDES[fallbackIdx].mobileImage : DEFAULT_SLIDES[fallbackIdx].desktopImage;
+    }
+  };
+
+  if (loading && sanitySlides.length === 0) {
+    // Splash screen minimalista enquanto decide se usa Sanity ou Fallback
+    return <section className={styles.hero_container} style={{ background: '#000' }} />;
+  }
 
   return (
     <section className={styles.hero_container}>
@@ -66,11 +118,10 @@ export default function HeroSection({ lang }: HeroProps) {
         transition={{ duration: 1 }}
       >
         <div className={styles.slider_wrapper}>
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             <motion.img
-              key={`${currentIndex}-${isMobile}`}
-              // Alterna a imagem baseada no device
-              src={isMobile ? HERO_IMAGES[currentIndex].mobile : HERO_IMAGES[currentIndex].desktop}
+              key={`${currentIndex}-${isMobile}-${activeSlides[currentIndex]?._id}`}
+              src={getImageUrl(activeSlides[currentIndex], isMobile)}
               alt={`Centelha Portfolio ${currentIndex + 1}`}
               className={styles.slider_image}
               initial={{ opacity: 0, scale: 1.05 }}
@@ -82,7 +133,7 @@ export default function HeroSection({ lang }: HeroProps) {
 
           {/* Paginação */}
           <div className={styles.pagination}>
-            {HERO_IMAGES.map((_, idx) => (
+            {activeSlides.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
@@ -112,7 +163,7 @@ export default function HeroSection({ lang }: HeroProps) {
             className={styles.logo_img}
           />
         </motion.div>
-
+ 
         <motion.p 
           className={styles.subtitle}
           initial={{ opacity: 0, y: 30 }}

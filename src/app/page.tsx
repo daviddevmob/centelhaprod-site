@@ -15,6 +15,7 @@ const ComoFazemos = dynamic(() => import("../components/ComoFazemos"));
 const CinematicVideo = dynamic(() => import("../components/CinematicVideo"));
 const PartnerMarquee = dynamic(() => import("../components/PartnerMarquee"));
 const HeroSection = dynamic(() => import("../components/HeroSection"));
+const MediaSection = dynamic(() => import("../components/MediaSection"));
 
 type Lang = 'pt' | 'en' | 'es';
 
@@ -155,6 +156,8 @@ export default function Home() {
       {/* <InstaGallery /> */}
 
       <PartnerMarquee />
+      
+      <MediaSection lang={lang} />
 
       {/* <motion.div
         initial="hidden"
