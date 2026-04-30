@@ -174,7 +174,7 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeUpVariant}
-        style={{ width: "100%", display: "flex", justifyContent: "center", margin: "40px 0" }}
+        style={{ width: "100%", display: "flex", justifyContent: "center", margin: "40px 0", padding: "0 20px", boxSizing: "border-box" }}
       >
         <motion.a
           href="https://wa.me/5585987172446"
