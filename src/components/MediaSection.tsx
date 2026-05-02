@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, ChevronDown, ChevronLeft, ChevronRight, X, Video, Smartphone, Image, Camera } from 'lucide-react';
-import { client, urlFor } from '../lib/sanity';
+import { client, urlFor, urlForModal } from '../lib/sanity';
 import styles from './MediaSection.module.css';
 
 interface YouTubeItem {
@@ -76,7 +76,8 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<{ url: string; caption?: string } | null>(null);
+  const [selectedImage, setSelectedImage] = useState<{ asset: any; caption?: string } | null>(null);
+  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -100,6 +101,13 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
+
+  // Reset loading state when image changes
+  useEffect(() => {
+    if (selectedImage) {
+      setImageLoading(true);
+    }
+  }, [selectedImage]);
 
   const getYouTubeEmbedUrl = (url: string) => {
     try {
@@ -236,11 +244,11 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
             )}
 
             {activeTab === 'fotosH' && (
-              <PhotoGalleries galleries={data.fotosH} cardStyle={styles.mediaCard_horizontal} onImageClick={(url, cap) => setSelectedImage({url, caption: cap})} noPhotosText={tt.noPhotos} />
+              <PhotoGalleries galleries={data.fotosH} cardStyle={styles.mediaCard_horizontal} onImageClick={(asset, cap) => setSelectedImage({asset, caption: cap})} noPhotosText={tt.noPhotos} />
             )}
 
             {activeTab === 'fotosV' && (
-              <PhotoGalleries galleries={data.fotosV} cardStyle={styles.mediaCard_vertical} onImageClick={(url, cap) => setSelectedImage({url, caption: cap})} noPhotosText={tt.noPhotos} />
+              <PhotoGalleries galleries={data.fotosV} cardStyle={styles.mediaCard_vertical} onImageClick={(asset, cap) => setSelectedImage({asset, caption: cap})} noPhotosText={tt.noPhotos} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -256,17 +264,24 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
           >
+            <button className={styles.close_btn} onClick={() => setSelectedImage(null)}>
+              <X size={24} />
+            </button>
             <motion.div 
               className={styles.lightbox_content}
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className={styles.close_btn} onClick={() => setSelectedImage(null)}>
-                <X size={40} />
-              </button>
-              <img src={selectedImage.url} alt="" className={styles.lightbox_image} />
+              {imageLoading && <div className={styles.lightbox_loader} />}
+              <img 
+                src={urlForModal(selectedImage.asset).url()} 
+                alt={selectedImage.caption || ''} 
+                className={styles.lightbox_image}
+                onLoad={() => setImageLoading(false)}
+              />
               {selectedImage.caption && (
                 <span className={styles.lightbox_caption}>{selectedImage.caption}</span>
               )}
@@ -278,7 +293,7 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
   );
 }
 
-function PhotoGalleries({ galleries, cardStyle, onImageClick, noPhotosText }: { galleries: ImageGallery[], cardStyle: string, onImageClick: (url: string, cap?: string) => void, noPhotosText: string }) {
+function PhotoGalleries({ galleries, cardStyle, onImageClick, noPhotosText }: { galleries: ImageGallery[], cardStyle: string, onImageClick: (asset: any, cap?: string) => void, noPhotosText: string }) {
   if (galleries.length === 0) return <div style={{ textAlign: 'center', color: '#666', padding: '40px 0' }}>{noPhotosText}</div>;
 
   return (
@@ -290,7 +305,7 @@ function PhotoGalleries({ galleries, cardStyle, onImageClick, noPhotosText }: { 
   );
 }
 
-function PhotoRow({ gallery, cardStyle, onImageClick }: { gallery: ImageGallery, cardStyle: string, onImageClick: (url: string, cap?: string) => void }) {
+function PhotoRow({ gallery, cardStyle, onImageClick }: { gallery: ImageGallery, cardStyle: string, onImageClick: (asset: any, cap?: string) => void }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -315,12 +330,13 @@ function PhotoRow({ gallery, cardStyle, onImageClick }: { gallery: ImageGallery,
             <div 
               key={img._key} 
               className={`${styles.mediaCard} ${cardStyle}`}
-              onClick={() => onImageClick(urlFor(img).url(), img.caption)}
+              onClick={() => onImageClick(img.asset, img.caption)}
             >
               <img
                 src={urlFor(img).width(800).url()}
                 alt={img.caption || ''}
                 className={styles.mediaImage}
+                loading="lazy"
               />
               {img.caption && (
                 <div className={styles.overlay}>

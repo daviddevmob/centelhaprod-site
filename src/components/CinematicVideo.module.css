@@ -113,28 +113,28 @@
 /* Mobile/Tablet: Centro */
 @media (max-width: 1023px) {
   .textBlock {
-    max-width: 90%;
+    max-width: 85%;
     left: 0;
     right: 0;
     margin: 0 auto;
     
-    /* --- EFEITO GLASSMORPHISM --- */
-    background: rgba(255, 255, 255, 0.05); 
-    backdrop-filter: blur(12px); 
-    -webkit-backdrop-filter: blur(12px); 
-    border: 1px solid rgba(255, 255, 255, 0.1); 
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    /* --- EFEITO GLASSMORPHISM REFORÇADO --- */
+    background: rgba(0, 0, 0, 0.4); 
+    backdrop-filter: blur(16px); 
+    -webkit-backdrop-filter: blur(16px); 
+    border: 1px solid rgba(255, 255, 255, 0.15); 
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
     
-    padding: 30px 20px; 
-    border-radius: 24px; 
+    padding: 24px; 
+    border-radius: 20px; 
   }
   
   .textLeft {
-    top: 15%;
+    top: 20%;
   }
   
   .textRight {
-    bottom: 15%;
+    bottom: 20%;
   }
 }
 
@@ -160,4 +160,9 @@
   font-size: 1.1rem;
   font-family: var(--font-inter);
   line-height: 1.4;
+}
+
+.highlight {
+  color: var(--accent);
+  font-weight: 600;
 }

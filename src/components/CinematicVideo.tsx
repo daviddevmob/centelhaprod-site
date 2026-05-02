@@ -10,27 +10,39 @@ interface CinematicVideoProps {
 const TRANSLATIONS = {
   pt: {
     title1: "Ação Real",
-    desc1: "Capturamos a essência do momento no ritmo em que ele acontece.",
+    desc1Before: "Capturamos a ",
+    desc1Highlight: "essência do momento",
+    desc1After: " no ritmo em que ele acontece.",
     title2: "Sem Limites",
-    desc2: "Da terra ao mar, a Centelha acompanha o seu movimento."
+    desc2Before: "Da terra ao mar, a ",
+    desc2Highlight: "Centelha",
+    desc2After: " acompanha o seu movimento."
   },
   en: {
     title1: "Real Action",
-    desc1: "We capture the essence of the moment in the rhythm it happens.",
+    desc1Before: "We capture the ",
+    desc1Highlight: "essence of the moment",
+    desc1After: " in the rhythm it happens.",
     title2: "No Limits",
-    desc2: "From land to sea, Centelha follows your movement."
+    desc2Before: "From land to sea, ",
+    desc2Highlight: "Centelha",
+    desc2After: " follows your movement."
   },
   es: {
     title1: "Acción Real",
-    desc1: "Capturamos la esencia del momento al ritmo que sucede.",
+    desc1Before: "Capturamos la ",
+    desc1Highlight: "esencia del momento",
+    desc1After: " al ritmo que sucede.",
     title2: "Sin Límites",
-    desc2: "De la terra ao mar, la Centelha acompaña su movimento."
+    desc2Before: "De la terra ao mar, la ",
+    desc2Highlight: "Centelha",
+    desc2After: " acompaña su movimento."
   }
 };
 
 // CONFIGURAÇÃO DA SEQUÊNCIA
 const FRAME_COUNT = 88;
-const PIXELS_PER_FRAME = 30; // Controla a "velocidade" do scroll. 30px de scroll = 1 frame.
+const PIXELS_PER_FRAME = 50; // Controla a "velocidade" do scroll. 50px de scroll = 1 frame.
 
 export default function CinematicVideo({ lang }: CinematicVideoProps) {
   const t = TRANSLATIONS[lang] || TRANSLATIONS.pt;
@@ -55,10 +67,7 @@ export default function CinematicVideo({ lang }: CinematicVideoProps) {
         img.onload = () => {
           count++;
           setImagesLoaded(count);
-          if (count === FRAME_COUNT) {
-            // Quando tudo carregar, definimos a altura real baseada na quantidade de frames
-            setTrackHeight(`${FRAME_COUNT * PIXELS_PER_FRAME + window.innerHeight}px`);
-          }
+          // O trackHeight agora é definido no useEffect de resize/load
         };
         loadedImages.push(img);
       }
@@ -87,7 +96,10 @@ export default function CinematicVideo({ lang }: CinematicVideoProps) {
     const ctx = canvas?.getContext('2d');
     const img = imagesRef.current[index];
 
-    if (!canvas || !ctx || !img) return;
+    if (!canvas || !ctx || !img) {
+      console.warn('RenderFrame: missing dependencies', { canvas: !!canvas, ctx: !!ctx, img: !!img, index });
+      return;
+    }
 
     // Lógica de aspect-ratio: Cover
     const canvasWidth = canvas.width;
@@ -117,32 +129,51 @@ export default function CinematicVideo({ lang }: CinematicVideoProps) {
     requestAnimationFrame(() => renderFrame(frameIndex));
   });
 
-  // 5. Retina Display Support
+  // 5. Retina Display Support & Resize handling
   useEffect(() => {
-    const updateCanvasSize = () => {
+    // Só inicializa o redimensionamento e o cálculo de altura após o carregamento inicial
+    if (imagesLoaded === 0) return;
+
+    const updateSizes = () => {
       const canvas = canvasRef.current;
-      if (!canvas) return;
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
+      if (canvas) {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        
+        // Renderiza o frame correto baseado no progresso atual do scroll
+        const currentProgress = scrollYProgress.get();
+        const frameIndex = Math.min(
+          FRAME_COUNT - 1,
+          Math.floor(currentProgress * (FRAME_COUNT - 1))
+        );
+        renderFrame(frameIndex);
+      }
       
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      
-      // Desenha o frame inicial
-      if (imagesLoaded === FRAME_COUNT) renderFrame(0);
+      // Ajusta a altura da seção baseado na janela atual
+      // Apenas atualiza se já carregou uma quantidade considerável para evitar flickering
+      if (imagesLoaded >= FRAME_COUNT / 2) {
+        setTrackHeight(`${FRAME_COUNT * PIXELS_PER_FRAME + window.innerHeight}px`);
+      }
     };
 
-    updateCanvasSize();
-    window.addEventListener('resize', updateCanvasSize);
-    return () => window.removeEventListener('resize', updateCanvasSize);
-  }, [imagesLoaded]);
+    updateSizes();
+    window.addEventListener('resize', updateSizes);
+    return () => window.removeEventListener('resize', updateSizes);
+  }, [imagesLoaded === FRAME_COUNT]); // Ativa definitivamente quando termina de carregar
 
   // Framer Motion Transforms (Text Layer)
-  const opacity1 = useTransform(scrollYProgress, [0.1, 0.25, 0.4], [0, 1, 0]);
-  const y1 = useTransform(scrollYProgress, [0.1, 0.25, 0.4], [60, 0, -60]);
-  const opacity2 = useTransform(scrollYProgress, [0.6, 0.75, 0.9], [0, 1, 0]);
-  const y2 = useTransform(scrollYProgress, [0.6, 0.75, 0.9], [60, 0, -60]);
-  const mockupScale = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [1.1, 1, 1, 0.95]);
+  // 1. Primeiro bloco aparece após o frame iniciar o movimento (0.15)
+  // 2. Segundo bloco aparece logo após o primeiro desaparecer
+  // 3. Ambos somem antes do final da seção (0.85)
+  const opacity1 = useTransform(scrollYProgress, [0.15, 0.25, 0.4, 0.5], [0, 1, 1, 0]);
+  const y1 = useTransform(scrollYProgress, [0.15, 0.25, 0.4, 0.5], [60, 0, 0, -60]);
+
+  const opacity2 = useTransform(scrollYProgress, [0.55, 0.65, 0.8, 0.85], [0, 1, 1, 0]);
+  const y2 = useTransform(scrollYProgress, [0.55, 0.65, 0.8, 0.85], [60, 0, 0, -60]);
+
+  const mockupScale = useTransform(scrollYProgress, [0, 0.1, 0.9, 1], [1.1, 1, 1, 0.9]);
 
   return (
     <section ref={sectionRef} className={styles.section} style={{ height: trackHeight }}>
@@ -174,12 +205,16 @@ export default function CinematicVideo({ lang }: CinematicVideoProps) {
         <div className={styles.textLayer}>
           <motion.div style={{ opacity: opacity1, y: y1 }} className={`${styles.textBlock} ${styles.textLeft}`}>
             <h2 className={styles.title}>{t.title1}</h2>
-            <p className={styles.subtitle}>{t.desc1}</p>
+            <p className={styles.subtitle}>
+              {t.desc1Before}<span className={styles.highlight}>{t.desc1Highlight}</span>{t.desc1After}
+            </p>
           </motion.div>
 
           <motion.div style={{ opacity: opacity2, y: y2 }} className={`${styles.textBlock} ${styles.textRight}`}>
             <h2 className={`${styles.title} ${styles.titleAccent}`}>{t.title2}</h2>
-            <p className={styles.subtitle}>{t.desc2}</p>
+            <p className={styles.subtitle}>
+              {t.desc2Before}<span className={styles.highlight}>{t.desc2Highlight}</span>{t.desc2After}
+            </p>
           </motion.div>
         </div>
 

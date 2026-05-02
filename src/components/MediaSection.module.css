@@ -364,7 +364,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: 60px 40px 40px;
   cursor: zoom-out;
 }
 
@@ -373,28 +373,49 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 85vh;
 }
 
 .lightbox_image {
-  max-width: 80vw; /* Constrained directly on the image */
-  max-height: 80vh; /* Constrained directly on the image */
+  max-width: 100%;
+  max-height: 80vh;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
   display: block;
 }
 
+.lightbox_loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  z-index: 1;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 .close_btn {
-  position: fixed; /* Fixed to viewport for cleanest look */
-  top: 30px;
-  right: 30px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   color: #fff;
   cursor: pointer;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -547,14 +568,24 @@
     aspect-ratio: 9 / 16;
   }
 
+  .lightbox_content {
+    max-width: 95vw;
+    max-height: 75vh;
+  }
+
   .lightbox_image {
-    max-width: 90vw;
-    max-height: 65vh;
+    max-width: 100%;
+    max-height: 70vh;
+  }
+
+  .lightbox_loader {
+    width: 40px;
+    height: 40px;
   }
 
   .close_btn {
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
     width: 44px;
     height: 44px;
   }
@@ -568,10 +599,6 @@
     width: 100%;
   }
 
-  .close_btn {
-    top: -50px;
-    right: 0;
-  }
   .tab_btn {
     padding: 8px 16px;
     font-size: 0.7rem;
