@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, ChevronDown, ChevronLeft, ChevronRight, X, Video, Smartphone, Image, Camera } from 'lucide-react';
+import { Play, ChevronDown, ChevronLeft, ChevronRight, X, Video, Image, Camera } from 'lucide-react';
 import { client, urlFor, urlForModal } from '../lib/sanity';
 import styles from './MediaSection.module.css';
 
@@ -23,11 +23,10 @@ interface ImageGallery {
   }[];
 }
 
-type TabType = 'videos' | 'shorts' | 'fotosH' | 'fotosV';
+type TabType = 'videos' | 'fotosH' | 'fotosV';
 
 const FETCH_QUERY = `{
   "videos": *[_type == "youtubeHorizontal"] | order(_createdAt desc),
-  "shorts": *[_type == "youtubeVertical"] | order(_createdAt desc),
   "fotosH": *[_type == "imageGalleryHorizontal"] | order(_createdAt desc),
   "fotosV": *[_type == "imageGalleryVertical"] | order(_createdAt desc)
 }`;
@@ -38,7 +37,6 @@ const TRANSLATIONS = {
     loading: 'Carregando mídias...',
     noPhotos: 'Nenhuma foto encontrada.',
     videos: 'Vídeos',
-    shorts: 'Shorts',
     fotosH: 'Fotos Horizontais',
     fotosV: 'Fotos Verticais',
   },
@@ -47,7 +45,6 @@ const TRANSLATIONS = {
     loading: 'Loading media...',
     noPhotos: 'No photos found.',
     videos: 'Videos',
-    shorts: 'Shorts',
     fotosH: 'Horizontal Photos',
     fotosV: 'Vertical Photos',
   },
@@ -56,7 +53,6 @@ const TRANSLATIONS = {
     loading: 'Cargando medios...',
     noPhotos: 'No se encontraron fotos.',
     videos: 'Videos',
-    shorts: 'Shorts',
     fotosH: 'Fotos Horizontales',
     fotosV: 'Fotos Verticales',
   }
@@ -69,10 +65,9 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
   const [activeTab, setActiveTab] = useState<TabType>('videos');
   const [data, setData] = useState<{
     videos: YouTubeItem[];
-    shorts: YouTubeItem[];
     fotosH: ImageGallery[];
     fotosV: ImageGallery[];
-  }>({ videos: [], shorts: [], fotosH: [], fotosV: [] });
+  }>({ videos: [], fotosH: [], fotosV: [] });
   const [loading, setLoading] = useState(true);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -120,7 +115,6 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
 
   const tabs = [
     { id: 'videos', label: tt.videos, icon: <Video size={16} /> },
-    { id: 'shorts', label: tt.shorts, icon: <Smartphone size={16} /> },
     { id: 'fotosH', label: tt.fotosH, icon: <Image size={16} /> },
     { id: 'fotosV', label: tt.fotosV, icon: <Camera size={16} /> },
   ];
@@ -231,14 +225,6 @@ export default function MediaSection({ lang = 'pt' }: { lang?: string }) {
               <div className={styles.grid_horizontal}>
                 {data.videos.map((item) => (
                   <YouTubeCard key={item._id} item={item} isPlaying={playingId === item._id} onPlay={() => setPlayingId(item._id)} getEmbedUrl={getYouTubeEmbedUrl} type="horizontal" />
-                ))}
-              </div>
-            )}
-
-            {activeTab === 'shorts' && (
-              <div className={styles.grid_vertical}>
-                {data.shorts.map((item) => (
-                  <YouTubeCard key={item._id} item={item} isPlaying={playingId === item._id} onPlay={() => setPlayingId(item._id)} getEmbedUrl={getYouTubeEmbedUrl} type="vertical" />
                 ))}
               </div>
             )}
@@ -355,8 +341,19 @@ function PhotoRow({ gallery, cardStyle, onImageClick }: { gallery: ImageGallery,
 }
 
 function YouTubeCard({ item, isPlaying, onPlay, getEmbedUrl, type }: { item: YouTubeItem, isPlaying: boolean, onPlay: () => void, getEmbedUrl: (url: string) => string, type: 'horizontal' | 'vertical' }) {
+  const isInstagram = item.url.includes('instagram.com');
+
+  const handleClick = () => {
+    if (isPlaying) return;
+    if (isInstagram) {
+      window.open('https://www.instagram.com/centelhaprod/', '_blank');
+    } else {
+      onPlay();
+    }
+  };
+
   return (
-    <div className={`${styles.mediaCard} ${type === 'horizontal' ? styles.mediaCard_horizontal : styles.mediaCard_vertical}`} onClick={() => !isPlaying && onPlay()}>
+    <div className={`${styles.mediaCard} ${type === 'horizontal' ? styles.mediaCard_horizontal : styles.mediaCard_vertical}`} onClick={handleClick}>
       {isPlaying ? (
         <div className={styles.embed_active}>
           <iframe
