@@ -1,9 +1,8 @@
 'use client';
 
+import { useRef, useEffect, useState } from 'react';
 import styles from './PartnerMarquee.module.css';
 
-// Certifique-se de que TODOS estes arquivos são PNGs transparentes.
-// Aviso: Ainda existem arquivos JPG/WEBP que devem ser substituídos por PNGs transparentes.
 const PARTNERS = [
   { name: 'Absolut', logo: '/parceiros/absolut.png' },
   { name: 'Banco do Brasil', logo: '/parceiros/banco do brasil.jpg' },
@@ -29,8 +28,13 @@ const PARTNERS = [
 ];
 
 export default function PartnerMarquee({ lang = 'pt' }: { lang?: string }) {
-  // Duplicamos o array para criar a ilusão de rolagem infinita contínua
-  const allPartners = [...PARTNERS, ...PARTNERS];
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+  
+  // Triplicamos para garantir que o scroll infinito manual funcione suavemente
+  const allPartners = [...PARTNERS, ...PARTNERS, ...PARTNERS];
 
   const titles: Record<string, React.ReactNode> = {
     pt: <>Quem Acompanha Nossa <span className={styles.highlight}>Centelha</span></>,
@@ -38,9 +42,63 @@ export default function PartnerMarquee({ lang = 'pt' }: { lang?: string }) {
     es: <>Quienes Siguen Nuestra <span className={styles.highlight}>Centelha</span></>
   };
 
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollWidth = container.scrollWidth;
+      container.scrollLeft = scrollWidth / 3;
+    }
+  }, []);
+
+  const handleInfiniteScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    const third = scrollWidth / 3;
+
+    if (scrollLeft < 10) {
+      container.scrollLeft = third;
+    } else if (scrollLeft + clientWidth > scrollWidth - 10) {
+      container.scrollLeft = third;
+    }
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (!scrollContainerRef.current) return;
+    const container = scrollContainerRef.current;
+    const scrollAmount = 300;
+    
+    container.scrollTo({
+      left: direction === 'left' ? container.scrollLeft - scrollAmount : container.scrollLeft + scrollAmount,
+      behavior: 'smooth'
+    });
+  };
+
+  // Funções para Dragging
+  const startDragging = (e: React.MouseEvent | React.TouchEvent) => {
+    setIsDragging(true);
+    const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX;
+    setStartX(pageX - (scrollContainerRef.current?.offsetLeft || 0));
+    setScrollLeft(scrollContainerRef.current?.scrollLeft || 0);
+  };
+
+  const stopDragging = () => {
+    setIsDragging(false);
+  };
+
+  const onDragging = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const pageX = 'touches' in e ? e.touches[0].pageX : e.pageX;
+    const x = pageX - (scrollContainerRef.current?.offsetLeft || 0);
+    const walk = (x - startX) * 2; // Multiplicador de velocidade
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+    }
+  };
+
   return (
     <section className={styles.section}>
-      {/* Cabeçalho da Seção */}
       <div className={styles.header}>
         <h2 className={styles.title}>
           {titles[lang] || titles.pt}
@@ -48,28 +106,57 @@ export default function PartnerMarquee({ lang = 'pt' }: { lang?: string }) {
         <div className={styles.divider} />
       </div>
 
-      {/* Container da Esteira */}
-      <div className={styles.marquee_container}>
-        {/* Máscaras de degradê para as logos sumirem suavemente nas bordas */}
-        <div className={styles.fade_left} />
-        <div className={styles.fade_right} />
+      <div className={styles.marquee_wrapper}>
+        <button 
+          className={styles.nav_button} 
+          onClick={() => scroll('left')}
+          aria-label="Scroll Left"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
 
-        {/* Fita Animada */}
-        <div className={styles.marquee_track}>
-          {allPartners.map((partner, idx) => (
-            <div key={idx} className={styles.logo_wrapper}>
-              <img
-                src={partner.logo}
-                alt={`Logo ${partner.name}`}
-                className={styles.logo}
-                loading="lazy"
-              />
-              {/* Tooltip elegante feito 100% em CSS (Sem estados de hover no React) */}
-              <span className={styles.tooltip}>{partner.name}</span>
-            </div>
-          ))}
+        <div 
+          className={`${styles.marquee_container} ${isDragging ? styles.dragging : ''}`} 
+          ref={scrollContainerRef}
+          onScroll={handleInfiniteScroll}
+          onMouseDown={startDragging}
+          onMouseUp={stopDragging}
+          onMouseLeave={stopDragging}
+          onMouseMove={onDragging}
+          onTouchStart={startDragging}
+          onTouchEnd={stopDragging}
+          onTouchMove={onDragging}
+        >
+          <div className={styles.marquee_track}>
+            {allPartners.map((partner, idx) => (
+              <div key={idx} className={styles.logo_wrapper}>
+                <img
+                  src={partner.logo}
+                  alt={`Logo ${partner.name}`}
+                  className={styles.logo}
+                  loading="lazy"
+                  draggable={false}
+                />
+                <span className={styles.brand_name}>{partner.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
+        <button 
+          className={styles.nav_button} 
+          onClick={() => scroll('right')}
+          aria-label="Scroll Right"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
       </div>
     </section>
   );
 }
+
+

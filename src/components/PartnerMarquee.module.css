@@ -2,67 +2,61 @@
 .section {
   width: 100%;
   padding: 6rem 0;
-  /* Fundo não é preto puro! Gradiente radial sutil para dar ambiência */
   background: radial-gradient(circle at center, #111111 0%, #030303 100%);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 4rem; /* Respiro entre o título e a esteira */
+  gap: 4rem;
 }
 
-/* 2. Container e Fades da Esteira */
+/* 2. Container da Esteira */
+.marquee_wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+}
+
 .marquee_container {
   position: relative;
   display: flex;
-  overflow: hidden;
+  overflow-x: hidden; /* Mudamos para hidden para o scroll manual */
   width: 100%;
+  scroll-behavior: smooth;
+  cursor: grab;
 }
 
-.fade_left, .fade_right {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 15%;
-  z-index: 10;
-  pointer-events: none; /* Deixa o mouse passar pelo degradê */
+.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto; /* Desativa suavidade durante o drag para resposta imediata */
 }
 
-.fade_left {
-  left: 0;
-  background: linear-gradient(to right, #030303, transparent);
-}
+/* Removido fades das bordas para maior visibilidade conforme solicitado */
 
-.fade_right {
-  right: 0;
-  background: linear-gradient(to left, #030303, transparent);
-}
-
-/* 3. A Fita e a Animação */
+/* 3. A Fita */
 .marquee_track {
   display: flex;
   width: max-content;
-  align-items: center;
-  gap: 6rem; /* Espaço generoso entre as logos */
-  padding: 40px 3rem 80px 3rem; /* Padding base muito maior embaixo para a legenda não sofrer corte */
-  animation: marquee 40s linear infinite;
+  align-items: flex-start;
+  gap: 6rem;
+  padding: 20px 0 60px 0;
+  user-select: none; /* Evita selecionar texto ao arrastar */
 }
 
-/* Pausa a fita inteira quando o usuário coloca o mouse em qualquer lugar nela */
-.marquee_container:hover .marquee_track {
-  animation-play-state: paused;
-}
 
-/* 4. O Wrapper e o Efeito Silhueta (Estado de Repouso) */
+/* 4. O Wrapper */
 .logo_wrapper {
   position: relative;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 160px; /* Evita que logos horizontais empurrem o layout */
-  cursor: pointer;
+  width: 160px;
+  text-align: center;
+  gap: 1.5rem;
 }
 
-/* Estilos de título e header, inseridos da documentação original ou baseados no que tinha na seção */
 .header {
   margin: 0 auto;
   padding: 0 24px;
@@ -96,53 +90,62 @@
 }
 
 .logo {
-  height: 48px; /* ALTURA FIXA: O segredo para alinhar formas diferentes */
+  height: 50px;
   width: auto;
   object-fit: contain;
-  /* O Truque do Filtro: Esbranquiça logos escuras e remove cores */
-  filter: grayscale(100%) brightness(200%) contrast(70%);
-  opacity: 0.35;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Removido filtros de grayscale e baixa opacidade */
+  filter: none;
+  opacity: 1;
+  transition: transform 0.3s ease;
 }
 
-/* 5. A Revelação (Hover State) */
 .logo_wrapper:hover .logo {
-  filter: grayscale(0%) brightness(100%) contrast(100%);
-  opacity: 1;
-  transform: scale(2.0); /* Pulo muito maior, sem molde! */
+  transform: scale(1.1);
 }
 
-/* 6. Tooltip CSS Limpo */
-.tooltip {
-  position: absolute;
-  bottom: -55px; /* Empurrado mais para baixo para dar espaço ao zoom maior */
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background-color: var(--accent-secondary); /* Verde padrão */
-  color: #000;
-  padding: 4px 12px;
+/* 6. Nome da Marca (Sempre Visível) */
+.brand_name {
+  color: #fff;
   font-size: 0.75rem;
-  font-weight: 700;
-  border-radius: 4px;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 20;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
 }
 
-.logo_wrapper:hover .tooltip {
+.logo_wrapper:hover .brand_name {
   opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0); /* Animação de subir suavemente */
+  color: var(--accent);
 }
 
-/* 7. Keyframes da Rolagem */
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  /* O valor do translateX deve cobrir exatamente metade da fita para o loop ser perfeito */
-  100% { transform: translateX(calc(-50% - 3rem)); } 
+/* 7. Setas de Navegação */
+.nav_button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.nav_button:hover {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+
+.nav_button svg {
+  width: 24px;
+  height: 24px;
 }
 
 @media (max-width: 768px) {
@@ -151,8 +154,13 @@
     gap: 3rem;
   }
 
-  .title {
-    font-size: clamp(1.2rem, 5vw, 1.6rem);
+  .marquee_wrapper {
+    padding: 0 1rem;
+  }
+
+  .nav_button {
+    width: 40px;
+    height: 40px;
   }
 
   .marquee_track {
@@ -160,16 +168,15 @@
   }
 
   .logo_wrapper {
-    width: 100px;
+    width: 120px;
   }
 
   .logo {
-    height: 36px;
+    height: 40px;
   }
 
-  .tooltip {
+  .brand_name {
     font-size: 0.65rem;
-    padding: 3px 8px;
-    bottom: -40px; /* Push down to fit zoom */
   }
 }
+
